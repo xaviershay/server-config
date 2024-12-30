@@ -296,7 +296,7 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "query": "from(bucket: \"system\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mem\")\n  |> filter(fn: (r) => r[\"_field\"] == \"used_percent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"system\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mem\")\n  |> filter(fn: (r) => r[\"_field\"] == \"used_percent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -391,7 +391,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "from(bucket: \"system\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"disk\")\n  |> filter(fn: (r) => r[\"_field\"] == \"used_percent\")\n  |> filter(fn: (r) => r[\"path\"] == \"/\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"system\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"disk\")\n  |> filter(fn: (r) => r[\"_field\"] == \"used_percent\")\n  |> filter(fn: (r) => r[\"path\"] == \"/\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -413,6 +413,6 @@
   "timezone": "browser",
   "title": "Host Health",
   "uid": "ee8iq5wh1ks1sa",
-  "version": 6,
+  "version": 8,
   "weekStart": ""
 }
