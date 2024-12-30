@@ -1,0 +1,45 @@
+---
+- name: Deploy dashboard to Grafana server
+  hosts: styx
+  become: true
+  vars:
+    grafana_provisioning_path: /etc/grafana/provisioning
+    dashboard_path: /etc/grafana/dashboards
+  tasks:
+    - name: Create Grafana directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ dashboard_path }}"
+        - "{{ grafana_provisioning_path }}/dashboards"
+
+    - name: Copy dashboard JSON to server
+      copy:
+        src: "templates/host-health-dashboard.json"
+        dest: "{{ dashboard_path }}/host-health.json"
+        mode: '0644'
+
+    - name: Configure Grafana dashboard provisioning
+      copy:
+        dest: "{{ grafana_provisioning_path }}/dashboards/default.yaml"
+        content: |
+          apiVersion: 1
+          providers:
+            - name: 'default'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              updateIntervalSeconds: 10
+              allowUiUpdates: true
+              options:
+                path: {{ dashboard_path }}
+        mode: '0644'
+
+    - name: Restart Grafana
+      systemd:
+        name: grafana-server
+        state: restarted
+        enabled: yes
