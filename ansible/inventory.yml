@@ -1,0 +1,5 @@
+all:
+  hosts:
+    styx:
+      ansible_host: 192.168.1.57
+      ansible_user: xavier

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec ansible-playbook -i inventory.yml playbook.yml --check --diff

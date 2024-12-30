@@ -1,0 +1,135 @@
+---
+- name: Setup InfluxDB
+  hosts: styx
+  become: true
+  vars:
+    influxdb_version: "2.7"
+    admin_username: "admin"
+    admin_password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      62363731653035306230383436353634346235646132303666613561383763303662383533623061
+      6432613531376532326233663962346132336662646537390a326266653535313136623366393538
+      66313463306263623337363661646432353063653062656261343232656264666132383431616636
+      3537376334396134300a653131633564393662623836633863643763663966373266376334343639
+      63303334626361353737366430616434353030333536303330356236363339366431323762323361
+      3530613461616530613262613735333466326365623962653938
+    org_name: "styx"
+    system_bucket: "system"
+    sensors_bucket: "sensors"
+    system_retention: "0s"
+    sensors_retention: "0s"
+    http_port: 8086
+
+  tasks:
+    #    - name: Create keyrings directory
+    #      file:
+    #        path: /etc/apt/keyrings
+    #        state: directory
+    #        mode: '0755'
+    #
+    #    - name: Download and add InfluxData GPG key
+    #      ansible.builtin.shell: |
+    #        curl -fsSL https://repos.influxdata.com/influxdb.key | gpg --dearmor | sudo tee /etc/apt/keyrings/influxdata-archive-keyring.gpg > /dev/null
+    #      args:
+    #        creates: /etc/apt/keyrings/influxdata-archive-keyring.gpg
+    #
+    #    - name: Add InfluxData repository
+    #      apt_repository:
+    #        repo: "deb [signed-by=/etc/apt/keyrings/influxdata-archive-keyring.gpg] https://repos.influxdata.com/debian stable main"
+    #        state: present
+    #        filename: influxdata
+    #        update_cache: yes
+    #
+    #    - name: Install InfluxDB
+    #      apt:
+    #        name: influxdb2
+    #        state: present
+    #        update_cache: yes
+
+    - name: Create InfluxDB configuration directory
+      file:
+        path: /etc/influxdb2
+        state: directory
+        mode: '0755'
+
+    - name: Configure InfluxDB
+      template:
+        src: influxdb.conf.j2
+        dest: /etc/influxdb2/config.yml
+        mode: '0644'
+      notify: restart influxdb
+
+    - name: Start and enable InfluxDB service
+      systemd:
+        name: influxdb
+        state: started
+        enabled: yes
+
+    - name: Wait for InfluxDB to be ready
+      wait_for:
+        port: "{{ http_port }}"
+        timeout: 30
+
+    - name: Check if InfluxDB is already initialized
+      stat:
+        path: /etc/influxdb2/.initialized
+      register: influx_initialized
+
+    - name: Initialize InfluxDB with system bucket
+      command: >
+        influx setup
+        --force
+        --username {{ admin_username }}
+        --password {{ admin_password }}
+        --org {{ org_name }}
+        --bucket {{ system_bucket }}
+        --retention {{ system_retention }}
+      when: not influx_initialized.stat.exists
+
+    - name: Create sensors bucket
+      command: >
+        influx bucket create
+        --org {{ org_name }}
+        --name {{ sensors_bucket }}
+        --retention {{ sensors_retention }}
+      when: not influx_initialized.stat.exists
+
+        #    - name: Create system metrics token
+        #      command: >
+        #        influx auth create
+        #        --org {{ org_name }}
+        #        --write-bucket {{ system_bucket }}
+        #        --read-bucket {{ system_bucket }}
+        #        --description "System metrics token"
+        #      register: system_token
+        #      when: not influx_initialized.stat.exists
+        #
+        #    - name: Create sensors token
+        #      command: >
+        #        influx auth create
+        #        --org {{ org_name }}
+        #        --write-bucket {{ sensors_bucket }}
+        #        --read-bucket {{ sensors_bucket }}
+        #        --description "Sensors token"
+        #      register: sensors_token
+        #      when: not influx_initialized.stat.exists
+        #
+        #    - name: Display tokens
+        #      debug:
+        #        msg:
+        #          - "System metrics token: {{ system_token.stdout }}"
+        #          - "Sensors token: {{ sensors_token.stdout }}"
+        #      when: not influx_initialized.stat.exists
+
+    - name: Mark InfluxDB as initialized
+      file:
+        path: /etc/influxdb2/.initialized
+        state: touch
+        mode: '0644'
+      when: not influx_initialized.stat.exists
+
+  handlers:
+    - name: restart influxdb
+      systemd:
+        name: influxdb
+        state: restarted

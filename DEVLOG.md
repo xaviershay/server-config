@@ -1,0 +1,77 @@
+## 2024-12-30
+
+### Setting up Raspberry Pi 5
+
+Pre-installed raspberry OS. Got IP address from router, responds to ping but
+not SSH. Makes sense.
+
+Plug in keyboard/mouse/monitor to finish install.
+
+RPi5 update: `unmet dependencies: raindrop: Breaks: arandr`
+
+Searched error message, first hit: https://forums.raspberrypi.com/viewtopic.php?t=380294
+
+> sudo apt full-upgrade
+
+Need to enable SSH. Can do this from `menu -> preferences -> RPi Configuration
+-> Interfaces`. But from CLI:
+
+> sudo systemctl start ssh
+
+We have SSH access! Disconnecting peripherals and going back to desktop.
+
+Setting up passwordless SSH. Learned a new command which is easier to remember
+than the `cat -` stuff I used to do:
+
+> ssh-copy-id $PIHOST
+
+Asked Claude which IaC I should use, recommended Ansible. Seems legit for my
+use case. Now following tutorial Claude generated to set up MOTD as a test case.
+
+Created `inventory.yml`
+
+Put commands into `bin`
+
+Playing around with `ansible-vault`. Put main secret in ignored `secrets.pass`
+then created `bin/generate-password` to use for service specific passwords.
+
+
+OUTSTANDING ISSUES:
+* I don't like how Claude sets up the buckets. Would prefer both a) idempotence by querying influxdb, and b) storing the tokens to a file.
+* Ansible didn't update `/etc/hosts` with new host name, caused "No address associated with hostname" warning when using `sudo`.
+
+Ran manually from influxdb installation instructions https://docs.influxdata.com/influxdb/v2/install/?t=Linux 
+
+```
+curl --silent --location -O \
+https://repos.influxdata.com/influxdata-archive.key
+echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  influxdata-archive.key" \
+| sha256sum --check - && cat influxdata-archive.key \
+| gpg --dearmor \
+| tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null \
+&& echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' \
+| tee /etc/apt/sources.list.d/influxdata.list
+```
+
+"Failed to enable unit: Unit file /etc/systemd/system/influxdb.service is masked."
+
+* Ansible setup failed to make an API token, couldn't figure out how to make one from CLI without already having one. Logged into web UI and created one there, then used `influx config create` to get CLI working.
+
+
+* Telegraf needs to be installed via ansible, but at least the config works. (Confirmed via influxdb UI that data is being reported.)
+
+```
+curl --silent --location -O \
+https://repos.influxdata.com/influxdata-archive.key \
+&& echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  influxdata-archive.key" \
+| sha256sum -c - && cat influxdata-archive.key \
+| gpg --dearmor \
+| sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null \
+&& echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' \
+| sudo tee /etc/apt/sources.list.d/influxdata.list
+sudo apt-get update && sudo apt-get install telegraf
+```
+
+* Lock down influxdb UI to localhost (to access with SSH tunnel)
+* Temperature stats from telegraf
+* Grafana

@@ -1,0 +1,60 @@
+---
+- name: Setup Telegraf with InfluxDB monitoring
+  hosts: all
+  become: true
+  vars:
+    influxdb_url: "http://localhost:8086"
+    influxdb_token: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        35636533303534336133613761306464663965306261343966366235313431643237336534323737
+        3833323639613663616530626163353232613732353265330a653932336636613831333965333035
+        66353539396238393566626463333236353636303364303764636533653131396365356364363765
+        6634396134643364310a373938363764633238366366316430613639313835313138303637373565
+        38383230623834343734613164613964376665653066636437356534333834626535366561393738
+        39333662353230636235303661363464616537666535383937303631613766643762376463396230
+        38623839303962343830353865353930363931656366323734663733393461316430633732646665
+        66623963663562636535663664316138306363366535326235623865313039643066343666616363
+        3263
+    influxdb_org: "styx"
+    influxdb_bucket: "system"
+    telegraf_version: "1.33.0"
+
+  tasks:
+    #    - name: Add InfluxData GPG key
+    #      apt_key:
+    #        url: https://repos.influxdata.com/influxdb.key
+    #        state: present
+    #
+    #    - name: Add InfluxData repository
+    #      apt_repository:
+    #        repo: "deb https://repos.influxdata.com/debian stable main"
+    #        state: present
+    #        filename: influxdata
+    #        update_cache: yes
+    #
+    #    - name: Install Telegraf
+    #      apt:
+    #        name: telegraf
+    #        state: present
+    #        update_cache: yes
+
+    - name: Create Telegraf configuration
+      template:
+        src: telegraf.conf.j2
+        dest: /etc/telegraf/telegraf.conf
+        owner: telegraf
+        group: telegraf
+        mode: '0644'
+      notify: restart telegraf
+
+    - name: Enable and start Telegraf service
+      systemd:
+        name: telegraf
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: restart telegraf
+      systemd:
+        name: telegraf
+        state: restarted
