@@ -75,3 +75,17 @@ sudo apt-get update && sudo apt-get install telegraf
 * Lock down influxdb UI to localhost (to access with SSH tunnel)
 * Temperature stats from telegraf
 * Grafana
+
+## 2024-12-31
+
+### Set up Grafana
+
+Want to get end to end working before I go back an fix up ansible scripts.
+
+Side quest: why isn't `styx.local` resolving? Needed to restart `avahi-daemon`
+and also it doesn't work inside VM but works on every other device. Unsolved
+mystery.
+
+Added a datasource yml file for influx. Messy part is needs influx variables
+which are in influxdb playbook, and also needs a grafana token which for now
+have hard-coded in influxdb playbook but there needs to be a better way.

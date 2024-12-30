@@ -1,0 +1,63 @@
+---
+- name: Install and Configure Grafana
+  hosts: styx
+  become: true
+  vars:
+    grafana_version: "11.4.0"
+    grafana_admin_password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      65373436616463626464366566363233353138633839326135353733333438326535356330386434
+      6430313762366634313230643161396564333931366232650a623366383762383035313761353433
+      66343761626530636534663031616263666430656162316138333265626236323232653935333634
+      3838636434303735640a326636633930633062333038336239653736613863373863643130323066
+      39663138313532313139663132323661656638386238643431303864313431643430356238666531
+      3038633366623634613434336561346238636532613336313732
+    grafana_port: 3000
+
+  tasks:
+    - name: Add Grafana GPG key
+      apt_key:
+        url: https://packages.grafana.com/gpg.key
+        state: present
+
+    - name: Add Grafana repository (Debian/Ubuntu)
+      apt_repository:
+        repo: "deb https://packages.grafana.com/oss/deb stable main"
+        state: present
+        filename: grafana
+
+    - name: Install Grafana package
+      package:
+        name: "grafana"
+        state: present
+
+    - name: Configure Grafana server settings
+      template:
+        src: grafana.ini.j2
+        dest: /etc/grafana/grafana.ini
+        owner: root
+        group: grafana
+        mode: '0640'
+      notify: restart grafana-server
+
+    - name: Start and enable Grafana service
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
+
+    - name: Wait for Grafana to be ready
+      uri:
+        url: "http://localhost:{{ grafana_port }}/api/health"
+        method: GET
+        status_code: 200
+      register: health_check
+      until: health_check.status == 200
+      retries: 12
+      delay: 5
+
+  handlers:
+    - name: restart grafana-server
+      systemd:
+        name: grafana-server
+        state: restarted
