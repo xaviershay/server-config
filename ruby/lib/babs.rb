@@ -84,8 +84,9 @@ class Babs
       task task_name, depends: depends do
         met? {
           @local_content = ERB.new(File.read("templates/#{file}")).result(binding)
-          remote_content = run("cat #{file}")
-          @local_content == remote_content
+          remote_digest = run("md5sum #{file} | head -c 32")
+          local_digest = Digest::MD5.hexdigest(@local_content)
+          local_digest == remote_digest
         }
         meet {
           upload_file file, @local_content
