@@ -90,7 +90,7 @@ class Babs
         }
         meet {
           upload_file file, @local_content, perms, group: group
-          after_meet.call
+          instance_exec(&after_meet)
         }
       end
       task_name

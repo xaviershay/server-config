@@ -1,0 +1,15 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://localhost:<%= v 'influxdb.port' %>
+    jsonData:
+      version: Flux
+      organization: <%= v 'hostname' %>
+    secureJsonData:
+      token: <%= v 'grafana.influxdb.api_token' %>
+    isDefault: true
+    editable: false
+    uid: influxdb

@@ -45,7 +45,7 @@ class Styx < Babs
   end
 
   {
-    grafana: {read: ['system', 'sensor']},
+    grafana: {read: ['system', 'sensors']},
     telegraf: {write: ['system']}
   }.each do |description, permissions|
     deps = permissions.values.flatten.map {|x| 'ensure influxdb bucket: %s' % x }
@@ -107,8 +107,14 @@ class Styx < Babs
     }
   end
 
-  sftp_task 'grafana: configure', '/etc/grafana/grafana.ini', 640,
+  sftp_task 'grafana: configure', [
+    '/etc/grafana/grafana.ini',
+    '/etc/grafana/provisioning/datasources/influxdb.yml',
+    '/etc/grafana/provisioning/dashboards/default.yml',
+    '/etc/grafana/dashboards/host-health.json'
+  ], 640,
    group: 'grafana',
+   depends: 'ensure influxdb token: grafana',
    after_meet: ->{ run("sudo systemctl restart grafana-server") }
 
   task 'grafana: run' do
