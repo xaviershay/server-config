@@ -89,3 +89,13 @@ mystery.
 Added a datasource yml file for influx. Messy part is needs influx variables
 which are in influxdb playbook, and also needs a grafana token which for now
 have hard-coded in influxdb playbook but there needs to be a better way.
+
+## 2025-01-01
+
+VM crashed yesterday, lost a few hours of work. Switched to Windows + WSL for development, going to try that for a while. Set up microframework on `ruby-wip` branch that I'm liking a lot more than Ansible. Goals for today:
+
+* Recreate Grafana setup
+* Check influxdb cold setup, think it's missing a step
+* Figure out password management with microframework
+* Investigate streaming behaviour of net/ssh?
+* Add some specs?
