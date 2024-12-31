@@ -15,7 +15,7 @@ class Context
     execute_ssh_command(script, log: true)
   end
 
-  def upload_file(file, content, perms)
+  def upload_file(file, content, perms, group: nil)
     temp_file = "/tmp/#{File.basename(file)}"
     # TODO: Don't hard code host here. And maybe try to reuse SFTP connection
     Net::SFTP.start('styx.local', 'xavier') do |sftp|
@@ -23,7 +23,9 @@ class Context
         f.write(content)
       end
     end
-    run("sudo mv #{temp_file} #{file} && sudo chmod #{perms} #{file}")
+    run("sudo mv #{temp_file} #{file}")
+    run("sudo chmod #{perms} #{file}") if perms
+    run("sudo chgrp #{group} #{file}") if group
   end
 
   def store_variable(key, value)

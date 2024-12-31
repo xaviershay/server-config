@@ -77,7 +77,7 @@ class Babs
     )
   end
 
-  def self.sftp_task(name, files, perms, depends: [])
+  def self.sftp_task(name, files, perms, depends: [], group: nil, after_meet: ->{})
     files = [*files]
     upload_tasks = files.map do |file|
       task_name = name + ": #{file}"
@@ -89,7 +89,8 @@ class Babs
           local_digest == remote_digest
         }
         meet {
-          upload_file file, @local_content, perms
+          upload_file file, @local_content, perms, group: group
+          after_meet.call
         }
       end
       task_name
@@ -99,5 +100,11 @@ class Babs
 
   def self.variables(mappings)
     @vars = mappings
+  end
+
+  def self.secret(name)
+    File.read("secrets/#{name}").chomp
+  rescue Errno::ENOENT
+    raise "Please place appropriate secret in secrets/#{name}"
   end
 end

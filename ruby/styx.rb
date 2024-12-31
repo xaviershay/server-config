@@ -15,7 +15,8 @@ class Styx < Babs
     }
   end
 
-  sftp_task 'influxdb: configure', '/etc/influxdb2/config.yml', 644
+  sftp_task 'influxdb: configure', '/etc/influxdb2/config.yml', 644,
+    after_meet: ->{ run("sudo systemctl restart influxdb") }
 
   task 'influxdb', depends: [
     'influxdb: install',
@@ -83,7 +84,8 @@ class Styx < Babs
   end
 
   sftp_task 'telegraf: configure', '/etc/telegraf/telegraf.conf', 600,
-   depends: 'ensure influxdb token: telegraf'
+   depends: 'ensure influxdb token: telegraf',
+   after_meet: ->{ run("sudo systemctl restart telegraf") }
 
   task 'telegraf: run' do
     met? { run("systemctl is-active --quiet telegraf && echo OK").start_with?("OK") }
@@ -97,6 +99,31 @@ class Styx < Babs
     'telegraf: configure',
     'telegraf: run'
   ]
+
+  task 'grafana: install' do
+    met? { run("/usr/sbin/grafana-server --version || true").start_with?("Version 11.4.0") }
+    meet {
+      run_script("install_grafana.bash")
+    }
+  end
+
+  sftp_task 'grafana: configure', '/etc/grafana/grafana.ini', 640,
+   group: 'grafana',
+   after_meet: ->{ run("sudo systemctl restart grafana-server") }
+
+  task 'grafana: run' do
+    met? { run("systemctl is-active --quiet grafana-server && echo OK").start_with?("OK") }
+    meet {
+      run("sudo systemctl restart grafana-server")
+    }
+  end
+
+  task 'grafana', depends: [
+    'grafana: install',
+    'grafana: configure',
+    'grafana: run'
+  ]
+
 
   task 'hostname' do
     met? {
@@ -112,6 +139,8 @@ class Styx < Babs
   variables \
     'hostname' => 'styx',
     'influxdb.port' => 8086,
+    'grafana.port' => 3000,
+    'grafana.password' => secret('grafana_password'),
     'telegraf.influxdb.bucket' => 'system'
 
   root_task [
@@ -119,7 +148,8 @@ class Styx < Babs
     'motd',
     'hosts',
     'influxdb',
-    'telegraf'
+    'telegraf',
+    'grafana'
   ]
 end
 
