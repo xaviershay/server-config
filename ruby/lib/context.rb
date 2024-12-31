@@ -65,7 +65,7 @@ class Context
     ssh.loop
 
     raise "command execution failed: #{command}\n#{stderr}" if exit_code != 0
-    stdout
+    stdout.chomp
   end
 
   def log_output(data)

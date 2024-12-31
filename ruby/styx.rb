@@ -101,6 +101,14 @@ class Styx < Babs
     'telegraf: run'
   ]
 
+  task 'hostname' do
+    met? {
+      @name = read_variable 'hostname'
+      run("hostname") == @name
+    }
+    meet { run("sudo hostnamectl set-hostname #{@name}") }
+  end
+
   sftp_task 'motd', '/etc/motd'
   sftp_task 'hosts', '/etc/hosts'
 
@@ -110,6 +118,7 @@ class Styx < Babs
     'telegraf.influxdb.bucket' => 'system'
 
   root_task [
+    'hostname',
     'motd',
     'hosts',
     'influxdb',
