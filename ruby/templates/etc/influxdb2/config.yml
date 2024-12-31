@@ -1,6 +1,6 @@
 bolt-path: /var/lib/influxdb2/influxd.bolt
 engine-path: /var/lib/influxdb2/engine
-http-bind-address: ":<%= influxdb.port %>"
+http-bind-address: ":<%= v 'influxdb.port' %>"
 query-concurrency: 10
 query-queue-size: 10
 storage-retention-check-interval: 4h

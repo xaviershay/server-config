@@ -9,7 +9,7 @@ class Styx < Babs
   end
 
   task 'influxdb: run' do
-    met? { false } # TODO: Copy health check from ansible
+    met? { run("influx ping").start_with?("OK") }
     meet {
       run("sudo systemctl restart influxdb")
     }
@@ -29,7 +29,7 @@ class Styx < Babs
     task "ensure influx bucket: #{bucket_name}", depends: 'influxdb' do
       met? {
         buckets = JSON.parse(run("influx bucket list --json"))
-        bucket = buckets.find {|x| x.fetch('name') == name }
+        bucket = buckets.find {|x| x.fetch('name') == bucket_name }
         if bucket
           store_variable "influxdb.buckets.#{bucket_name}", bucket.fetch('id')
         end
@@ -46,16 +46,18 @@ class Styx < Babs
     grafana: {read: ['system', 'sensor']},
     telegraf: {write: ['system']}
   }.each do |description, permissions|
-    task "ensure influxdb token: #{description}", depends: 'influxdb' do
+    deps = permissions.values.flatten.map {|x| 'ensure influx token: %s' % x }
+    task "ensure influxdb token: #{description}", depends: deps do
       met? {
         tokens = JSON.parse(run("influx auth list --json"))
         token = tokens.find {|x| x.fetch('description') == description }
         if token
-          store_variable 'telegraf.influxdb.api_token', token.fetch('token')
+          store_variable "#{description}.influxdb.api_token", token.fetch('token')
         end
       }
       meet {
-        flags = ""
+        flags = []
+        pp permissions
         flags << permissions.fetch(:read, []).map {|x|
           "--read-bucket %s" % read_variable("influxdb.buckets.#{x}")
         }
@@ -64,14 +66,14 @@ class Styx < Babs
         }
         run("influx auth create --description \"%s\" %s" % [
           description,
-          flags
+          flags.join(" ")
         ])
       }
     end
   end
 
   task 'telegraf: install' do
-    met? { false } # TODO run("influxd version").start_with?("InfluxDB v2.7.11") }
+    met? { run("telegraf --version").start_with?("Telegraf 1.33.0") }
     meet {
       run_script("install_telegraf.bash")
     }
@@ -82,7 +84,7 @@ class Styx < Babs
   ], depends: 'ensure influxdb token: telegraf'
 
   task 'telegraf: run' do
-    met? { false } # TODO: Copy health check from ansible
+    met? { run("systemctl is-active --quiet telegraf && echo OK").start_with?("OK") }
     meet {
       run("sudo systemctl restart telegraf")
     }
@@ -93,6 +95,10 @@ class Styx < Babs
     'telegraf: configure',
     'telegraf: run'
   ]
+
+  variables \
+    'influxdb.port' => 8086,
+    'telegraf.influxdb.bucket' => 'system'
 
   root_task [
     'influxdb',

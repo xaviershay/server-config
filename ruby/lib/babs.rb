@@ -1,7 +1,9 @@
 require 'net/ssh'
-
 require 'context'
 require 'set'
+require 'json'
+require 'erb'
+require 'net/sftp'
 
 class TaskDefinition
   def met?(*args, &block)
@@ -24,6 +26,9 @@ class Babs
     Net::SSH.start('styx.local') do |ssh|
       @completed = Set.new
       @context = Context.new(ssh)
+      self.class.vars.each do |key, value|
+        @context.store_variable key, value
+      end
       root = self.class.root
       root.each do |task_name|
         run_task(task_name)
@@ -61,6 +66,7 @@ class Babs
 
   def self.root; @root end
   def self.tasks; @tasks end
+  def self.vars; @vars end
 
   def self.root_task(deps)
     @root = deps
@@ -75,13 +81,26 @@ class Babs
     )
   end
 
-  def self.sftp_task(name, file, depends: [], &block)
-    # TODO
-    @tasks ||= {}
-    @tasks[name] = TaskSpec.new(
-      name,
-      [*depends],
-      block
-    )
+  def self.sftp_task(name, files, depends: [])
+    files = [*files]
+    upload_tasks = files.map do |file|
+      task_name = name + ": #{file}"
+      task task_name do
+        met? {
+          @local_content = ERB.new(File.read("templates/#{file}")).result(binding)
+          remote_content = run("cat #{file}")
+          @local_content == remote_content
+        }
+        meet {
+          upload_file file, @local_content
+        }
+      end
+      task_name
+    end
+    task name, depends: upload_tasks
+  end
+
+  def self.variables(mappings)
+    @vars = mappings
   end
 end
