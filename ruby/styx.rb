@@ -101,11 +101,14 @@ class Styx < Babs
     'telegraf: run'
   ]
 
+  sftp_task 'motd', '/etc/motd'
+
   variables \
     'influxdb.port' => 8086,
     'telegraf.influxdb.bucket' => 'system'
 
   root_task [
+    'motd',
     'influxdb',
     'telegraf'
   ]
