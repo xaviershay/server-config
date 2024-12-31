@@ -21,8 +21,7 @@ end
 TaskSpec = Data.define(:name, :depends, :block)
 
 class Babs
-  # Progress until a met? is not met then halt
-  def plan
+  def apply
     Net::SSH.start('styx.local') do |ssh|
       @completed = Set.new
       @context = Context.new(ssh)
@@ -39,7 +38,6 @@ class Babs
   def run_task(task_name)
     return if @completed.include?(task_name)
 
-    puts task_name
     task = self.class.tasks.fetch(task_name)
     task.depends.each do |dep|
       run_task(dep)
@@ -49,19 +47,17 @@ class Babs
       t.instance_exec(&task.block)
 
       met = @context.instance_exec(&t._met)
+      puts "%s %s" % [met ? "✓" : "✗", task_name]
       unless met
         @context.instance_exec(&t._meet)
         met = @context.instance_exec(&t._met)
+        puts "%s %s" % [met ? "✓" : "✗", task_name]
         unless met
           raise "task not met after meeting: #{task_name}"
         end
       end
     end
     @completed << task.name
-  end
-
-  # Progress fully
-  def apply
   end
 
   def self.root; @root end
@@ -85,7 +81,7 @@ class Babs
     files = [*files]
     upload_tasks = files.map do |file|
       task_name = name + ": #{file}"
-      task task_name do
+      task task_name, depends: depends do
         met? {
           @local_content = ERB.new(File.read("templates/#{file}")).result(binding)
           remote_content = run("cat #{file}")

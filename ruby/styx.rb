@@ -26,12 +26,15 @@ class Styx < Babs
   ]
 
   %w(system sensors).each do |bucket_name|
-    task "ensure influx bucket: #{bucket_name}", depends: 'influxdb' do
+    task "ensure influxdb bucket: #{bucket_name}", depends: 'influxdb' do
       met? {
         buckets = JSON.parse(run("influx bucket list --json"))
-        bucket = buckets.find {|x| x.fetch('name') == bucket_name }
+        bucket = buckets.find {|x| x.fetch('name') == bucket_name.to_s }
         if bucket
           store_variable "influxdb.buckets.#{bucket_name}", bucket.fetch('id')
+          true
+        else
+          false
         end
       }
       meet {
@@ -46,23 +49,25 @@ class Styx < Babs
     grafana: {read: ['system', 'sensor']},
     telegraf: {write: ['system']}
   }.each do |description, permissions|
-    deps = permissions.values.flatten.map {|x| 'ensure influx token: %s' % x }
+    deps = permissions.values.flatten.map {|x| 'ensure influxdb bucket: %s' % x }
     task "ensure influxdb token: #{description}", depends: deps do
       met? {
         tokens = JSON.parse(run("influx auth list --json"))
-        token = tokens.find {|x| x.fetch('description') == description }
+        token = tokens.find {|x| x.fetch('description') == description.to_s }
         if token
           store_variable "#{description}.influxdb.api_token", token.fetch('token')
+          true
+        else
+          false
         end
       }
       meet {
         flags = []
-        pp permissions
         flags << permissions.fetch(:read, []).map {|x|
           "--read-bucket %s" % read_variable("influxdb.buckets.#{x}")
         }
         flags << permissions.fetch(:write, []).map {|x|
-          "--write-bucket" % read_variable("influxdb.buckets.#{x}")
+          "--write-bucket %s" % read_variable("influxdb.buckets.#{x}")
         }
         run("influx auth create --description \"%s\" %s" % [
           description,
@@ -106,4 +111,4 @@ class Styx < Babs
   ]
 end
 
-Styx.new.plan
+Styx.new.apply

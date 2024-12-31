@@ -64,7 +64,7 @@ class Context
     end
     ssh.loop
 
-    raise "command execution failed" if exit_code != 0
+    raise "command execution failed: #{command}\n#{stderr}" if exit_code != 0
     stdout
   end
 
