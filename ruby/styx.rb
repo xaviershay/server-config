@@ -105,6 +105,7 @@ class Styx < Babs
   sftp_task 'hosts', '/etc/hosts'
 
   variables \
+    'hostname' => 'styx',
     'influxdb.port' => 8086,
     'telegraf.influxdb.bucket' => 'system'
 
