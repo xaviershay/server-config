@@ -15,9 +15,7 @@ class Styx < Babs
     }
   end
 
-  sftp_task 'influxdb: configure', [
-    '/etc/influxdb2/config.yml'
-  ]
+  sftp_task 'influxdb: configure', '/etc/influxdb2/config.yml', 644
 
   task 'influxdb', depends: [
     'influxdb: install',
@@ -84,9 +82,8 @@ class Styx < Babs
     }
   end
 
-  sftp_task 'telegraf: configure', [
-    '/etc/telegraf/telegraf.conf'
-  ], depends: 'ensure influxdb token: telegraf'
+  sftp_task 'telegraf: configure', '/etc/telegraf/telegraf.conf', 600,
+   depends: 'ensure influxdb token: telegraf'
 
   task 'telegraf: run' do
     met? { run("systemctl is-active --quiet telegraf && echo OK").start_with?("OK") }
@@ -109,8 +106,8 @@ class Styx < Babs
     meet { run("sudo hostnamectl set-hostname #{@name}") }
   end
 
-  sftp_task 'motd', '/etc/motd'
-  sftp_task 'hosts', '/etc/hosts'
+  sftp_task 'motd', '/etc/motd', 644
+  sftp_task 'hosts', '/etc/hosts', 644
 
   variables \
     'hostname' => 'styx',

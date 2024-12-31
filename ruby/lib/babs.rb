@@ -77,19 +77,19 @@ class Babs
     )
   end
 
-  def self.sftp_task(name, files, depends: [])
+  def self.sftp_task(name, files, perms, depends: [])
     files = [*files]
     upload_tasks = files.map do |file|
       task_name = name + ": #{file}"
       task task_name, depends: depends do
         met? {
           @local_content = ERB.new(File.read("templates/#{file}")).result(binding)
-          remote_digest = run("md5sum #{file} | head -c 32")
+          remote_digest = run("sudo md5sum #{file} | head -c 32")
           local_digest = Digest::MD5.hexdigest(@local_content)
           local_digest == remote_digest
         }
         meet {
-          upload_file file, @local_content
+          upload_file file, @local_content, perms
         }
       end
       task_name
