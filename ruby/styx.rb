@@ -2,7 +2,7 @@ require 'babs'
 
 class Styx < Babs
   task 'influxdb: install' do
-    met? { run("influxd version").start_with?("InfluxDB v2.7.11") }
+    met? { run("influxd version || true").start_with?("InfluxDB v2.7.11") }
     meet {
       run_script("install_influxdb.bash")
     }

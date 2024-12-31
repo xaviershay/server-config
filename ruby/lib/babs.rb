@@ -22,7 +22,7 @@ TaskSpec = Data.define(:name, :depends, :block)
 
 class Babs
   def apply
-    Net::SSH.start('styx.local') do |ssh|
+    Net::SSH.start('styx.local', 'xavier') do |ssh|
       @completed = Set.new
       @context = Context.new(ssh)
       self.class.vars.each do |key, value|
