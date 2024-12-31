@@ -102,6 +102,7 @@ class Styx < Babs
   ]
 
   sftp_task 'motd', '/etc/motd'
+  sftp_task 'hosts', '/etc/hosts'
 
   variables \
     'influxdb.port' => 8086,
@@ -109,6 +110,7 @@ class Styx < Babs
 
   root_task [
     'motd',
+    'hosts',
     'influxdb',
     'telegraf'
   ]
