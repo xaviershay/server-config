@@ -2,7 +2,7 @@
 
 Automated configuration scripts for my personal stuff.
 
-Right now it's a single Raspberry Pi, but I anticipated adding terraform for cloud things.
+Right now it's a single Raspberry Pi, but I anticipate adding terraform for cloud things.
 
 ## Setup & Usage
 
