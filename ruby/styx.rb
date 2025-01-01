@@ -177,4 +177,6 @@ class Styx < Babs
   ]
 end
 
-Styx.new.apply
+Net::SSH.start('styx.local', 'xavier') do |ssh|
+  Styx.new.apply(SSHContext.new(ssh))
+end

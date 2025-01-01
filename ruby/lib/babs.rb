@@ -1,5 +1,6 @@
 require 'net/ssh'
 require 'context'
+require 'ssh_context'
 require 'set'
 require 'json'
 require 'erb'
@@ -21,18 +22,23 @@ end
 TaskSpec = Data.define(:name, :depends, :block)
 
 class Babs
-  def apply
-    Net::SSH.start('styx.local', 'xavier') do |ssh|
-      @completed = Set.new
-      @context = Context.new(ssh)
-      self.class.vars.each do |key, value|
-        @context.store_variable key, value
-      end
-      root = self.class.root
-      root.each do |task_name|
-        run_task(task_name)
-      end
+  def initialize(logger: $stdout)
+    @logger = logger
+  end
+
+  def apply(context = Context.new)
+    @context = context
+    @completed = Set.new
+    self.class.vars.each do |key, value|
+      @context.store_variable key, value
     end
+    root = self.class.root
+    root.each do |task_name|
+      run_task(task_name)
+    end
+
+    # Relies on Set maintaining insertion order when converted
+    @completed.to_a
   end
 
   def run_task(task_name)
@@ -47,11 +53,11 @@ class Babs
       t.instance_exec(&task.block)
 
       met = @context.instance_exec(&t._met)
-      puts "%s %s" % [met ? "✓" : "✗", task_name]
+      @logger.puts "%s %s" % [met ? "✓" : "✗", task_name]
       unless met
         @context.instance_exec(&t._meet)
         met = @context.instance_exec(&t._met)
-        puts "%s %s" % [met ? "✓" : "✗", task_name]
+        @logger.puts "%s %s" % [met ? "✓" : "✗", task_name]
         unless met
           raise "task not met after meeting: #{task_name}"
         end
@@ -60,12 +66,12 @@ class Babs
     @completed << task.name
   end
 
-  def self.root; @root end
-  def self.tasks; @tasks end
-  def self.vars; @vars end
+  def self.root; @root ||= [] end
+  def self.tasks; @tasks ||= [] end
+  def self.vars; @vars ||= {} end
 
   def self.root_task(deps)
-    @root = deps
+    @root = [*deps]
   end
 
   def self.task(name, depends: [], &block)
