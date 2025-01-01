@@ -22,6 +22,7 @@ A microframework modeled off [Babushka](https://github.com/benhoskings/babushka)
 
 * Not wanting to run an agent on the Pi itself.
 * Mostly wanting to "just run shell scripts", with a smattering of idempotency.
+* It's more a pet than cattle.
 * Finding the "translation tax" into Ansible YML too heavy.
 * It's only me using it and I know exactly what I want.
 * Framework is small enough I could rewrite it in a day.
