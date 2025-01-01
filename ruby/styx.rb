@@ -83,8 +83,9 @@ class Styx < Babs
     }
   end
 
-  sftp_task 'telegraf: configure', '/etc/telegraf/telegraf.conf', 600,
+  sftp_task 'telegraf: configure', '/etc/telegraf/telegraf.conf', 640,
    depends: 'ensure influxdb token: telegraf',
+   group: 'telegraf',
    after_meet: ->{ run("sudo systemctl restart telegraf") }
 
   task 'telegraf: run' do
