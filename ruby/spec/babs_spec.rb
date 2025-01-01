@@ -104,4 +104,37 @@ describe 'babs' do
 
     x.apply
   end
+
+  it 'allows defered variables' do
+    x = test_multi_task do
+      task 'goal' do
+        met? { read_variable('x') == 2 }
+        meet { store_variable 'x', read_variable('y') }
+      end
+
+      variables \
+        'x' => 0,
+        'y' => ->{ 2 }
+
+      root_task 'goal'
+    end
+
+    x.apply
+  end
+
+  it 'does not read defered variables until used' do
+    x = test_multi_task do
+      task 'goal' do
+        met? { read_variable('x') == 0 }
+      end
+
+      variables \
+        'x' => 0,
+        'y' => ->{ raise }
+
+      root_task 'goal'
+    end
+
+    x.apply
+  end
 end

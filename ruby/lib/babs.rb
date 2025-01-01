@@ -110,7 +110,7 @@ class Babs
   end
 
   def self.secret(name)
-    File.read("secrets/#{name}").chomp
+    ->{ File.read("secrets/#{name}").chomp }
   rescue Errno::ENOENT
     raise "Please place appropriate secret in secrets/#{name}"
   end

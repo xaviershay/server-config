@@ -8,7 +8,12 @@ class Context
   end
 
   def read_variable(key)
-    @vars.fetch(key)
+    x = @vars.fetch(key)
+    if x.respond_to?(:call)
+      x.call
+    else
+      x
+    end
   end
 
   alias_method :v, :read_variable
