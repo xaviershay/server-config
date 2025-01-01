@@ -87,7 +87,7 @@ class Babs
           remote_digest = run("sudo md5sum #{file} | head -c 32")
           remote_perms, remote_group = *run("sudo stat -c '%a %G' #{file} || true").split(" ")
           local_digest = Digest::MD5.hexdigest(@local_content)
-          local_digest == remote_digest && remote_perms = perms && (!group || group == remote_group)
+          local_digest == remote_digest && remote_perms.to_i == perms.to_i && (!group || group == remote_group)
         }
         meet {
           upload_file file, @local_content, perms, group: group

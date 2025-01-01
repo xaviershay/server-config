@@ -11,7 +11,7 @@ class Context
   end
   
   def run_script(location)
-    script = File.read("scripts/#{location}").gsub("\r\n", "\n")
+    script = ERB.new(File.read("scripts/#{location}")).result(binding)
     execute_ssh_command(script, log: true)
   end
 
@@ -23,6 +23,7 @@ class Context
         f.write(content)
       end
     end
+    run("sudo mkdir -p $(dirname #{file})")
     run("sudo mv #{temp_file} #{file}")
     run("sudo chmod #{perms} #{file}") if perms
     run("sudo chgrp #{group} #{file}") if group

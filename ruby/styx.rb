@@ -9,7 +9,7 @@ class Styx < Babs
   end
 
   task 'influxdb: run' do
-    met? { run("influx ping").start_with?("OK") }
+    met? { run("influx ping || true").start_with?("OK") }
     meet {
       run("sudo systemctl restart influxdb")
     }
@@ -18,10 +18,17 @@ class Styx < Babs
   sftp_task 'influxdb: configure', '/etc/influxdb2/config.yml', 644,
     after_meet: ->{ run("sudo systemctl restart influxdb") }
 
+  task 'influxdb: setup', depends: 'influxdb: install' do
+    met? { run("influx server-config") rescue false }
+    meet {
+      run_script("setup_influxdb.bash")
+    }
+  end
   task 'influxdb', depends: [
     'influxdb: install',
     'influxdb: configure',
-    'influxdb: run'
+    'influxdb: run',
+    'influxdb: setup',
   ]
 
   %w(system sensors).each do |bucket_name|
@@ -38,7 +45,7 @@ class Styx < Babs
       }
       meet {
         run("influx bucket create --name %s" % [
-          name,
+          bucket_name,
         ])
       }
     end
@@ -131,7 +138,6 @@ class Styx < Babs
     'grafana: run'
   ]
 
-
   task 'hostname' do
     met? {
       @name = read_variable 'hostname'
@@ -140,20 +146,31 @@ class Styx < Babs
     meet { run("sudo hostnamectl set-hostname #{@name}") }
   end
 
-  sftp_task 'motd', '/etc/motd', 644
+  sftp_task 'motd', [
+    '/etc/motd', # Blank file, only use dynamic generation
+    '/etc/update-motd.d/10-uname',
+    '/etc/update-motd.d/20-styx'
+  ], 755
   sftp_task 'hosts', '/etc/hosts', 644
+  sftp_task 'ssh', '/etc/ssh/sshd_config', 644
 
   variables \
     'hostname' => 'styx',
     'influxdb.port' => 8086,
+    'influxdb.password' => secret('influxdb_password'),
     'grafana.port' => 3000,
     'grafana.password' => secret('grafana_password'),
     'telegraf.influxdb.bucket' => 'system'
 
-  root_task [
+  task 'system', depends: [
     'hostname',
-    'motd',
     'hosts',
+    'motd',
+    'ssh'
+  ]
+
+  root_task [
+    'system',
     'influxdb',
     'telegraf',
     'grafana'

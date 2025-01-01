@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# This is part of the default install, but I don't like it so commenting
+#uname -snrvm

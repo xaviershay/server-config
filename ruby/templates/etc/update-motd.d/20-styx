@@ -1,0 +1,13 @@
+#!/bin/bash
+
+UPTIME=$(uptime -p)
+
+cat << EOS
+
+  (?_^
+   |\ )
+   |/_\      <%= v "hostname" %>
+
+         flowing for ${UPTIME:3}
+
+EOS
