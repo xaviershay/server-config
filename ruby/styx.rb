@@ -1,6 +1,21 @@
 require 'babs'
 
 class Styx < Babs
+  def self.systemctl_enable_task(service)
+    ->{
+      met? {
+        run(<<-CMD).start_with?("OK")
+          sudo systemctl status #{service} \
+            | grep Loaded \
+            | grep -qv disabled \
+            && echo "OK" \
+            || true
+        CMD
+      }
+      meet { run("sudo systemctl enable #{service}") }
+    }
+  end
+
   task 'influxdb: install' do
     met? { run("influxd version || true").start_with?("InfluxDB v2.7.11") }
     meet {
@@ -24,11 +39,15 @@ class Styx < Babs
       run_script("setup_influxdb.bash")
     }
   end
+
+  task 'influxdb: enable', &systemctl_enable_task('influxdb')
+
   task 'influxdb', depends: [
     'influxdb: install',
     'influxdb: configure',
     'influxdb: run',
     'influxdb: setup',
+    'influxdb: enable'
   ]
 
   %w(system sensors).each do |bucket_name|
@@ -102,10 +121,13 @@ class Styx < Babs
     }
   end
 
+  task 'telegraf: enable', &systemctl_enable_task('telegraf')
+
   task 'telegraf', depends: [
     'telegraf: install',
     'telegraf: configure',
-    'telegraf: run'
+    'telegraf: run',
+    'telegraf: enable'
   ]
 
   task 'grafana: install' do
@@ -132,10 +154,13 @@ class Styx < Babs
     }
   end
 
+  task 'grafana: enable', &systemctl_enable_task('grafana-server')
+
   task 'grafana', depends: [
     'grafana: install',
     'grafana: configure',
-    'grafana: run'
+    'grafana: run',
+    'grafana: enable'
   ]
 
   task 'hostname' do
@@ -152,7 +177,9 @@ class Styx < Babs
     '/etc/update-motd.d/20-styx'
   ], 755
   sftp_task 'hosts', '/etc/hosts', 644
-  sftp_task 'ssh', '/etc/ssh/sshd_config', 644
+  sftp_task 'sshd: configure', '/etc/ssh/sshd_config', 644
+
+  task 'sshd: enable', &systemctl_enable_task('ssh')
 
   variables \
     'hostname' => 'styx',
@@ -166,7 +193,8 @@ class Styx < Babs
     'hostname',
     'hosts',
     'motd',
-    'ssh'
+    'sshd: configure',
+    'sshd: enable'
   ]
 
   root_task [
