@@ -177,8 +177,9 @@ class Styx < Babs
     '/etc/update-motd.d/20-styx'
   ], 755
   sftp_task 'hosts', '/etc/hosts', 644
+  # Not sure why this executable, but matches what was there
+  sftp_task 'boot_config', '/boot/firmware/config.txt', 755
   sftp_task 'sshd: configure', '/etc/ssh/sshd_config', 644
-
   task 'sshd: enable', &systemctl_enable_task('ssh')
 
   variables \
@@ -193,6 +194,7 @@ class Styx < Babs
     'hostname',
     'hosts',
     'motd',
+    'boot_config',
     'sshd: configure',
     'sshd: enable'
   ]
