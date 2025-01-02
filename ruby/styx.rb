@@ -173,7 +173,8 @@ class Styx < Babs
   sftp_task 'blocky: configure', [
     '/etc/blocky/config.yml',
     '/etc/systemd/system/blocky.service'
-  ], 644
+  ], 644,
+    after_meet: ->{ run("sudo systemctl restart blocky") }
 
   task 'blocky: run' do
     met? { run("systemctl is-active --quiet blocky && echo OK").start_with?("OK") }
