@@ -1,0 +1,17 @@
+upstreams:
+  groups:
+    default:
+      - 1.1.1.1
+      - 8.8.8.8
+blocking:
+  denylists:
+    ads:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+  clientGroupsBlock:
+    default:
+      - ads
+      - gambling
+      - malware
+ports:
+  dns: 53
+  http: 4000
