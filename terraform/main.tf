@@ -255,9 +255,29 @@ resource "aws_s3_bucket_lifecycle_configuration" "backup" {
     }
   }
 }
-# Create bucket policy to allow access from the specified IAM user
-resource "aws_s3_bucket_policy" "backup" {
-  bucket = aws_s3_bucket.backup.id
+
+# Create IAM group
+resource "aws_iam_group" "backups" {
+  name = "backups"
+}
+
+# Attach policy to group
+resource "aws_iam_group_policy_attachment" "backups_policy" {
+  group      = aws_iam_group.backups.name
+  policy_arn = aws_iam_policy.backup_policy.arn
+}
+
+# Add user to group
+resource "aws_iam_group_membership" "backups_group_membership" {
+  name  = "backups-group-membership"
+  users = [aws_iam_user.styx.name]
+  group = aws_iam_group.backups.name
+}
+
+# Create IAM policy allowing access to the backup bucket
+resource "aws_iam_policy" "backup_policy" {
+  name        = "backup-policy"
+  description = "Allow access to backup bucket"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -265,9 +285,6 @@ resource "aws_s3_bucket_policy" "backup" {
       {
         Sid       = "AllowBackupUserAccess"
         Effect    = "Allow"
-        Principal = {
-          AWS = aws_iam_user.styx.arn
-        }
         Action = [
           "s3:PutObject",
           "s3:GetObject",
