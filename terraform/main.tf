@@ -194,115 +194,17 @@ resource "aws_iam_policy" "sns_publish" {
   })
 }
 
-resource "aws_s3_bucket" "backup" {
-  bucket = "xaviershay-backups"
-  
-  # Force destroy is set to false for safety - bucket cannot be destroyed with content
-  force_destroy = false
-}
-
-# Enable versioning to protect against accidental deletions
-resource "aws_s3_bucket_versioning" "backup" {
-  bucket = aws_s3_bucket.backup.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-# Enable server-side encryption by default
-resource "aws_s3_bucket_server_side_encryption_configuration" "backup" {
-  bucket = aws_s3_bucket.backup.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
-# Block public access to the bucket
-resource "aws_s3_bucket_public_access_block" "backup" {
-  bucket = aws_s3_bucket.backup.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-# Configure lifecycle rules for cost optimization
-resource "aws_s3_bucket_lifecycle_configuration" "backup" {
-  bucket = aws_s3_bucket.backup.id
-
-  rule {
-    id     = "transition_to_ia"
-    status = "Enabled"
-
-    transition {
-      days          = 30
-      storage_class = "STANDARD_IA"
-    }
-
-    # Optional: Move older backups to Glacier for further cost savings
-    transition {
-      days          = 90
-      storage_class = "GLACIER"
-    }
-
-    # Optional: Delete old versions after 1 year
-    expiration {
-      days = 365
-    }
-  }
-}
-
-# Create IAM group
-resource "aws_iam_group" "backups" {
-  name = "backups"
-}
-
-# Attach policy to group
-resource "aws_iam_group_policy_attachment" "backups_policy" {
-  group      = aws_iam_group.backups.name
-  policy_arn = aws_iam_policy.backup_policy.arn
+# Attach policy to user
+resource "aws_iam_user_policy_attachment" "styx_sns" {
+  user       = aws_iam_user.styx.name
+  policy_arn = aws_iam_policy.sns_publish.arn
 }
 
 # Add user to group
 resource "aws_iam_group_membership" "backups_group_membership" {
   name  = "backups-group-membership"
   users = [aws_iam_user.styx.name]
-  group = aws_iam_group.backups.name
-}
-
-# Create IAM policy allowing access to the backup bucket
-resource "aws_iam_policy" "backup_policy" {
-  name        = "backup-policy"
-  description = "Allow access to backup bucket"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "AllowBackupUserAccess"
-        Effect    = "Allow"
-        Action = [
-          "s3:PutObject",
-          "s3:GetObject",
-          "s3:ListBucket"
-        ]
-        Resource = [
-          aws_s3_bucket.backup.arn,
-          "${aws_s3_bucket.backup.arn}/*"
-        ]
-      }
-    ]
-  })
-}
-
-# Attach policy to user
-resource "aws_iam_user_policy_attachment" "styx_sns" {
-  user       = aws_iam_user.styx.name
-  policy_arn = aws_iam_policy.sns_publish.arn
+  group = local.backup_group_name
 }
 
 # Create access key for the user
@@ -333,4 +235,25 @@ variable "phone_number" {
   description = "Phone number to receive SMS notifications"
   type        = string
   # Format: +1234567890
+}
+
+locals {
+  backup_group_name = "backups"
+}
+
+module "backup_bucket" {
+   source = "./modules/backup_bucket"
+
+   bucket_name = "xaviershay-backups"
+   group_name = local.backup_group_name
+ }
+
+moved {
+  from = aws_s3_bucket.backup
+  to = module.backup_bucket.aws_s3_bucket.backup
+}
+
+moved {
+  from = aws_iam_group.backups
+  to = module.backup_bucket.aws_iam_group.backups
 }
