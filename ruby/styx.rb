@@ -215,8 +215,9 @@ class Styx < Babs
   variables \
     'hostname' => 'styx',
     'influxdb.port' => 8086,
-    'influxdb.password' => secret('influxdb_password'),
     'grafana.port' => 3000,
+    'blocky.port' => 4000,
+    'influxdb.password' => secret('influxdb_password'),
     'grafana.password' => secret('grafana_password'),
     'telegraf.influxdb.bucket' => 'system'
 

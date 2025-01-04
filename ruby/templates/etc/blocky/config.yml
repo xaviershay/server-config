@@ -14,7 +14,10 @@ blocking:
       - malware
 ports:
   dns: 53
-  http: 4000
+  http: <%= v 'blocky.port' %>
+prometheus:
+  enable: true
+  path: /metrics
 customDNS:
   customTTL: 24h
   filterUnmappedTypes: true
