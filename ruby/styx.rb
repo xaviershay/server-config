@@ -230,7 +230,10 @@ class Styx < Babs
   ]
 
   sftp_task 'notify-on-fail', '/usr/local/bin/notify-on-fail', 755, depends: 'aws cli'
-  sftp_task 'backup-influxdb', '/usr/local/bin/backup-influxdb', 755, depends: 'aws cli'
+  sftp_task 'backup-influxdb', [
+    '/usr/local/bin/backup-influxdb',
+    '/etc/cron.d/cron.daily/run-backup-influxdb'
+  ], 755, depends: 'aws cli'
 
   variables \
     'hostname' => 'styx',
