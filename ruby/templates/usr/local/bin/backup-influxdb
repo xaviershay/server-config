@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Configuration
+S3_BUCKET="<%= v 'aws.buckets.backup' %>"
+S3_PREFIX="influxdb-backups"
+BACKUP_DIR="/tmp/influxdb-backup"
+LOCKFILE="/tmp/influxdb-backup.lock"
+LOGFILE="/var/log/influxdb-backup.log"
+
+# Logging function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" # | tee -a $LOGFILE
+}
+
+# Error handling
+set -e
+trap 'log "Backup failed! Error on line $LINENO"' ERR
+
+# Try to acquire lock, exit if already running
+exec 200>$LOCKFILE
+flock -n 200 || {
+    log "Backup already running, exiting..."
+    exit 1
+}
+
+# Start backup process
+log "Starting InfluxDB backup..."
+
+rm -rf $BACKUP_DIR
+mkdir -p $BACKUP_DIR
+
+influx backup $BACKUP_DIR
+
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+ARCHIVE="${BACKUP_DIR}_${TIMESTAMP}.tar.gz"
+
+log "Compressing backups..."
+tar -czf $ARCHIVE -C $BACKUP_DIR .
+
+log "Uploading to S3..."
+aws s3 cp $ARCHIVE "s3://${S3_BUCKET}/${S3_PREFIX}/${TIMESTAMP}.tar.gz"
+
+log "Cleaning up local files..."
+rm -rf $BACKUP_DIR
+rm $ARCHIVE
+
+log "Backup completed successfully!"
+
+# Release lock (will happen automatically when script ends, but being explicit)
+flock -u 200

@@ -230,6 +230,7 @@ class Styx < Babs
   ]
 
   sftp_task 'notify-on-fail', '/usr/local/bin/notify-on-fail', 755, depends: 'aws cli'
+  sftp_task 'backup-influxdb', '/usr/local/bin/backup-influxdb', 755, depends: 'aws cli'
 
   variables \
     'hostname' => 'styx',
@@ -239,6 +240,7 @@ class Styx < Babs
     'influxdb.password' => secret('influxdb_password'),
     'grafana.password' => secret('grafana_password'),
     'telegraf.influxdb.bucket' => 'system',
+    'aws.buckets.backup' => 'xaviershay-backups', # TODO: From terraform
     'aws.infra_alerts_sns_topic_arn' => 'arn:aws:sns:ap-southeast-4:615749242856:infra-alerts', # TODO: Fetch from terraform
     'aws.region' => 'ap-southeast-4', # Melbourne
     'aws.access_key_id' => secret('aws_access_key_id'),
@@ -250,6 +252,7 @@ class Styx < Babs
     'motd',
     'boot_config',
     'notify-on-fail',
+    'backup-influxdb',
     'sshd: configure',
     'sshd: enable'
   ]
