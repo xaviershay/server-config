@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Configuration
+SNS_TOPIC_ARN="<%= v 'aws.infra_alerts_sns_topic_arn' %>"
+AWS_REGION="<%= v 'aws.region' %>"
+
+# Function to send SNS notification
+send_sns_notification() {
+    local exit_code=$1
+    local command="$2"
+    
+    aws sns publish \
+        --region "$AWS_REGION" \
+        --topic-arn "$SNS_TOPIC_ARN" \
+        --message "Command failed: $command (exit code: $exit_code)" \
+        --subject "Script Execution Failed" \
+        2>/dev/null
+        
+    if [ $? -ne 0 ]; then
+        echo "Failed to send SNS notification" >&2
+    fi
+}
+
+# Check if any arguments were provided
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 command [args...]" >&2
+    exit 1
+fi
+
+# Execute the command with all arguments
+"$@"
+exit_code=$?
+
+# If command failed, send notification
+if [ $exit_code -ne 0 ]; then
+    send_sns_notification "$exit_code" "$*"
+fi
+
+exit $exit_code

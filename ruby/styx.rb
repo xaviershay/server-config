@@ -212,6 +212,25 @@ class Styx < Babs
   sftp_task 'sshd: configure', '/etc/ssh/sshd_config', 644
   task 'sshd: enable', &systemctl_enable_task('ssh')
 
+  sftp_task 'aws cli: configure', [
+    '/home/xavier/.aws/config',
+    '/home/xavier/.aws/credentials'
+  ], 600
+
+  task 'aws cli: install' do
+    met? { run("aws --version || true").start_with?("aws-cli/2.9.19") }
+    meet {
+      run("sudo apt install awscli")
+    }
+  end
+
+  task 'aws cli', depends: [
+    'aws cli: install',
+    'aws cli: configure'
+  ]
+
+  sftp_task 'notify-on-fail', '/usr/local/bin/notify-on-fail', 755, depends: 'aws cli'
+
   variables \
     'hostname' => 'styx',
     'influxdb.port' => 8086,
@@ -219,13 +238,18 @@ class Styx < Babs
     'blocky.port' => 4000,
     'influxdb.password' => secret('influxdb_password'),
     'grafana.password' => secret('grafana_password'),
-    'telegraf.influxdb.bucket' => 'system'
+    'telegraf.influxdb.bucket' => 'system',
+    'aws.infra_alerts_sns_topic_arn' => 'arn:aws:sns:ap-southeast-4:615749242856:infra-alerts', # TODO: Fetch from terraform
+    'aws.region' => 'ap-southeast-4', # Melbourne
+    'aws.access_key_id' => secret('aws_access_key_id'),
+    'aws.secret_access_key' => secret('aws_secret_access_key')
 
   task 'system', depends: [
     'hostname',
     'hosts',
     'motd',
     'boot_config',
+    'notify-on-fail',
     'sshd: configure',
     'sshd: enable'
   ]

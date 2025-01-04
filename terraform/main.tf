@@ -165,6 +165,56 @@ resource "aws_iam_role" "sns_delivery_status" {
   })
 }
 
+# Create IAM user
+resource "aws_iam_user" "styx" {
+  name = "styx"
+  tags = {
+    Description = "User for styx server"
+  }
+}
+
+# Create IAM policy allowing publish to specific SNS topic
+resource "aws_iam_policy" "sns_publish" {
+  name        = "sns-publish-infra-alerts"
+  description = "Allow publishing to infrastructure alerts SNS topic"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sns:Publish"
+        ]
+        Resource = [
+          aws_sns_topic.infra_alerts.arn
+        ]
+      }
+    ]
+  })
+}
+
+# Attach policy to user
+resource "aws_iam_user_policy_attachment" "styx_sns" {
+  user       = aws_iam_user.styx.name
+  policy_arn = aws_iam_policy.sns_publish.arn
+}
+
+# Create access key for the user
+resource "aws_iam_access_key" "styx" {
+  user = aws_iam_user.styx.name
+}
+
+# Output the access key details
+output "styx_access_key_id" {
+  value = aws_iam_access_key.styx.id
+}
+
+output "styx_secret_access_key" {
+  value     = aws_iam_access_key.styx.secret
+  sensitive = true
+}
+
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
