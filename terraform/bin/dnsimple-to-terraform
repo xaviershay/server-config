@@ -1,0 +1,219 @@
+#!/usr/bin/env ruby
+
+# Primarily claude.ai generated
+
+require 'net/http'
+require 'uri'
+require 'json'
+require 'fileutils'
+
+class DNSimpleToTerraform
+  def initialize
+    @token = File.read(".dnsimple_token").chomp
+    @account_id = File.read(".dnsimple_account_id").chomp
+    
+    @base_url = "https://api.dnsimple.com/v2"
+    @headers = {
+      'Authorization' => "Bearer #{@token}",
+      'Accept' => 'application/json'
+    }
+    @used_resource_names = {}
+    @cache_dir = 'api_cache'
+    FileUtils.mkdir_p(@cache_dir)
+  end
+
+  def get_zones
+    cache_file = File.join(@cache_dir, 'zones.json')
+    if File.exist?(cache_file)
+      JSON.parse(File.read(cache_file))
+    else
+      response = make_request("#{@base_url}/#{@account_id}/zones")
+      File.write(cache_file, response.to_json)
+      response
+    end['data'].map { |zone| zone['name'] }
+  end
+
+  def get_records(zone)
+    cache_file = File.join(@cache_dir, "#{zone}_records.json")
+    if File.exist?(cache_file)
+      JSON.parse(File.read(cache_file))
+    else
+      response = make_request("#{@base_url}/#{@account_id}/zones/#{zone}/records")
+      File.write(cache_file, response.to_json)
+      response
+    end['data']
+  end
+
+  def generate_terraform_config(zones_and_records)
+    terraform_config = []
+    @resources_and_ids = []
+
+    # Add provider block and variables
+    terraform_config << <<~PROVIDER
+      terraform {
+        required_providers {
+          dnsimple = {
+            source  = "dnsimple/dnsimple"
+            version = "~> 1.0"
+          }
+        }
+      }
+
+      provider "dnsimple" {
+        token   = var.dnsimple_token
+        account = var.dnsimple_account_id
+      }
+
+      variable "dnsimple_token" {
+        type      = string
+        sensitive = true
+      }
+
+      variable "dnsimple_account_id" {
+        type = string
+      }
+    PROVIDER
+
+    # Add record resources for each zone
+    zones_and_records.each do |zone, records|
+      # Add zone comment header
+      terraform_config << "\n# Zone: #{zone}"
+      
+      records.each do |record|
+        # Skip system-managed records
+        next if record['system_record']
+
+        # Create a safe name for the resource
+        safe_name = generate_safe_name(zone, record)
+        value = record['content']
+        value = "\"#{value}\"" unless value.start_with?("\"")
+
+        # Build the resource block
+        resource_block = []
+        resource_block << %Q(resource "dnsimple_zone_record" "#{safe_name}" {)
+        resource_block << %Q(  zone_name = "#{zone}")
+        resource_block << %Q(  name   = "#{record['name']}")
+        resource_block << %Q(  type   = "#{record['type']}")
+        resource_block << %Q(  value  = #{value})
+
+        # Add optional attributes
+        resource_block << "  ttl    = #{record['ttl']}" if record['ttl']
+        resource_block << "  priority = #{record['priority']}" if record['priority']
+
+        resource_block << "}\n"
+        terraform_config << resource_block.join("\n")
+
+        # Store resource and ID for import script
+        @resources_and_ids << { safe_name: safe_name, zone: zone, id: record['id'] }
+      end
+    end
+
+    terraform_config.join("\n")
+  end
+
+  def generate_safe_name(zone, record)
+    # Include zone name in the resource name to ensure uniqueness across zones
+    base_name = "#{zone.gsub('.', '_')}_#{record['type'].downcase}_#{record['name'].empty? ? 'apex' : record['name'].downcase}"
+    safe_name = base_name.gsub(/[^a-z0-9_]/, '_')
+
+    # If this name is already used, append a number to make it unique
+    if @used_resource_names.key?(safe_name)
+      counter = @used_resource_names[safe_name]
+      safe_name = "#{safe_name}_#{counter}"
+      @used_resource_names[safe_name] = counter + 1
+    else
+      @used_resource_names[safe_name] = 2
+    end
+    
+    safe_name
+  end
+
+  def generate_import_script(zones_and_records)
+    script_content = []
+    
+    # Add shebang and comment
+    script_content << "#!/bin/bash"
+    script_content << "# Auto-generated Terraform import script for DNSimple records"
+    script_content << "set -e"
+    script_content << ""
+    
+    # Add check for terraform initialization
+    script_content << 'if [ ! -d ".terraform" ]; then'
+    script_content << '  echo "Terraform not initialized. Running terraform init..."'
+    script_content << '  terraform init'
+    script_content << 'fi'
+    script_content << ""
+
+    # Add import commands for each record
+    @resources_and_ids.each do |resource|
+      script_content << "terraform import module.dns.dnsimple_zone_record.#{resource[:safe_name]} #{resource[:zone]}_#{resource[:id]}"
+    end
+
+    script_content.join("\n")
+  end
+
+  def convert_and_import
+    puts "Fetching zones and records..."
+    
+    # Create output directory
+    FileUtils.mkdir_p('terraform_output')
+    
+    # Collect all zones and their records
+    zones_and_records = {}
+    total_records = 0
+    
+    get_zones.each do |zone|
+      print "Processing zone #{zone}... "
+      records = get_records(zone)
+      zones_and_records[zone] = records
+      non_system_records = records.reject { |r| r['system_record'] }
+      total_records += non_system_records.length
+      puts "#{non_system_records.length} non-system records found"
+    end
+
+    # Generate and write Terraform configuration
+    config = generate_terraform_config(zones_and_records)
+    File.write("terraform_output/main.tf", config)
+
+    # Generate and write import script
+    import_script = generate_import_script(zones_and_records)
+    import_script_path = "terraform_output/import_records.sh"
+    File.write(import_script_path, import_script)
+    FileUtils.chmod(0755, import_script_path)
+
+    # Print summary and instructions
+    puts "\nSummary:"
+    puts "- Processed #{zones_and_records.length} zones"
+    puts "- Found #{total_records} non-system records"
+    puts "\nFiles created:"
+    puts "- terraform_output/main.tf"
+    puts "- #{import_script_path}"
+    puts "\nNext steps:"
+    puts "1. cd terraform_output"
+    puts "2. Export your DNSimple credentials:"
+    puts "   export DNSIMPLE_TOKEN='your_token'"
+    puts "   export DNSIMPLE_ACCOUNT_ID='your_account_id'"
+    puts "3. Run ./import_records.sh to import all records"
+  end
+
+  private
+
+  def make_request(url)
+    uri = URI(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(uri)
+    @headers.each { |key, value| request[key] = value }
+
+    response = http.request(request)
+    raise "HTTP Request failed: #{response.code} - #{response.body}" unless response.code.to_i == 200
+
+    JSON.parse(response.body)
+  end
+end
+
+if __FILE__ == $0
+  converter = DNSimpleToTerraform.new
+  converter.convert_and_import
+end

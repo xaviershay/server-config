@@ -16,6 +16,16 @@ module "infra_alerts" {
 }
 
 
+# In theory we could manage all these with terraform, but instead we're going to
+# leave them out and just use TF to manage cloudflare, where we're migrating to.
+
+# module "dnsimple" {
+#   source = "./modules/dns"
+# 
+#   dnsimple_account_id = var.dnsimple_account_id
+#   dnsimple_token = var.dnsimple_token
+# }
+
 # Create IAM user
 resource "aws_iam_user" "styx" {
   name = "styx"
