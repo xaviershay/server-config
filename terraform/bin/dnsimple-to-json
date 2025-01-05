@@ -1,0 +1,132 @@
+#!/usr/bin/ruby
+
+require 'net/http'
+require 'json'
+require 'fileutils'
+require 'digest'
+require 'logger'
+require 'tmpdir'
+require 'time'
+
+class DNSExporter
+  CACHE_DIR = File.join(Dir.tmpdir, 'dns_cache')
+  CACHE_TTL = 3600 # 1 hour in seconds
+  API_BASE = 'https://api.dnsimple.com/v2'
+
+  def initialize
+    @access_token = File.read(File.expand_path('.dnsimple_access_token')).strip
+    @account_id = File.read(File.expand_path('.dnsimple_account_id')).strip
+    @logger = Logger.new(STDOUT)
+    
+    FileUtils.mkdir_p(CACHE_DIR)
+  end
+
+  def export_configuration
+    zones = fetch_zones
+    
+    {
+      provider: 'dnsimple',
+      exported_at: Time.now.iso8601,
+      zones: zones.map { |zone| export_zone(zone) }
+    }
+  end
+
+  private
+
+  def fetch_zones
+    response = make_request("#{API_BASE}/#{@account_id}/zones")
+    response.fetch('data', [])
+  end
+
+  def export_zone(zone)
+    records = fetch_zone_records(zone['name'])
+    
+    {
+      name: zone['name'],
+      records: records.map { |record| export_record(record) }
+    }
+  end
+
+  def fetch_zone_records(zone_name)
+    response = make_request("#{API_BASE}/#{@account_id}/zones/#{zone_name}/records")
+    response.fetch('data', [])
+  end
+
+  def export_record(record)
+    {
+      name: record['name'],
+      type: record['type'],
+      ttl: record['ttl'],
+      content: record['content'],
+      priority: record['priority'],
+      regions: record['regions'],
+      metadata: {
+        created_at: record['created_at'],
+        updated_at: record['updated_at']
+      }
+    }
+  end
+
+  def make_request(url)
+    cached_request(url) do
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+
+      request = Net::HTTP::Get.new(uri)
+      request['Authorization'] = "Bearer #{@access_token}"
+      request['Accept'] = 'application/json'
+
+      response = http.request(request)
+      
+      case response
+      when Net::HTTPSuccess
+        JSON.parse(response.body)
+      else
+        raise "API request failed: #{response.code} - #{response.body}"
+      end
+    end
+  end
+
+  def cached_request(key)
+    cache_file = cache_path(key)
+    
+    if cache_valid?(cache_file)
+      @logger.info "Using cached data for #{key}"
+      return JSON.parse(File.read(cache_file), symbolize_names: true)
+    end
+
+    @logger.info "Fetching fresh data for #{key}"
+    response = yield
+    
+    File.write(cache_file, JSON.generate(response))
+    response
+  end
+
+  def cache_path(key)
+    File.join(CACHE_DIR, "#{Digest::SHA256.hexdigest(key)}.json")
+  end
+
+  def cache_valid?(cache_file)
+    File.exist?(cache_file) && 
+      (Time.now - File.mtime(cache_file)) < CACHE_TTL
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  begin
+    exporter = DNSExporter.new
+    configuration = exporter.export_configuration
+    
+    output_file = 'dns_configuration.json'
+    File.write(output_file, JSON.pretty_generate(configuration))
+    puts "DNS configuration exported to #{output_file}"
+  rescue Errno::ENOENT => e
+    puts "Error: Could not find credential files."
+    puts "Please ensure you have created ~/.dnsimple_access_token and ~/.dnsimple_account_id"
+    exit 1
+  rescue StandardError => e
+    puts "Error: #{e.message}"
+    exit 1
+  end
+end

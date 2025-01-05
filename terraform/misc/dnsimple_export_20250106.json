@@ -1,0 +1,2142 @@
+{
+  "provider": "dnsimple",
+  "exported_at": "2025-01-06T08:27:56+11:00",
+  "zones": [
+    {
+      "name": "dbisyourfriend.com",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010913 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:32Z",
+            "updated_at": "2024-05-03T16:24:17Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:32Z",
+            "updated_at": "2014-01-09T05:17:37Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:32Z",
+            "updated_at": "2014-01-09T05:17:37Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:32Z",
+            "updated_at": "2014-01-09T05:17:38Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:32Z",
+            "updated_at": "2014-01-09T05:17:38Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:57Z",
+            "updated_at": "2014-01-09T05:17:59Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:57Z",
+            "updated_at": "2014-01-09T05:17:59Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:57Z",
+            "updated_at": "2014-01-09T05:17:59Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:57Z",
+            "updated_at": "2024-02-23T13:07:35Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:57Z",
+            "updated_at": "2024-02-23T13:07:35Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "d23w87a8fjkh8y.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-03-28T03:06:12Z",
+            "updated_at": "2017-12-26T05:59:01Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for d23w87a8fjkh8y.cloudfront.net\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-03-28T03:06:12Z",
+            "updated_at": "2024-02-23T13:07:48Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "d23w87a8fjkh8y.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-03-28T03:06:12Z",
+            "updated_at": "2017-12-26T05:58:55Z"
+          }
+        },
+        {
+          "name": "_686c207ceecb58e351890902a01bea15",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_4390ceafbeef5760cf5fa67a94de2970.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-12-14T06:59:37Z",
+            "updated_at": "2018-12-14T06:59:37Z"
+          }
+        },
+        {
+          "name": "_d592b7af147a78767a0deccd6dc196ec.www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_084bfef37b01306cc5874e6417dcf249.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-12-14T06:59:51Z",
+            "updated_at": "2018-12-14T06:59:51Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "eventhandapp.com",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010925 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:58:43Z",
+            "updated_at": "2024-05-03T16:13:09Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "eventhandapp.com.herokudns.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:15Z",
+            "updated_at": "2016-12-28T03:25:24Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for eventhandapp.com.herokudns.com\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:15Z",
+            "updated_at": "2024-02-23T13:07:23Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.eventhandapp.com.herokudns.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:15Z",
+            "updated_at": "2016-12-28T03:25:28Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:26Z",
+            "updated_at": "2014-01-09T04:59:28Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:26Z",
+            "updated_at": "2014-01-09T04:59:28Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:26Z",
+            "updated_at": "2014-01-09T04:59:28Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:26Z",
+            "updated_at": "2024-02-23T13:07:24Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:59:26Z",
+            "updated_at": "2024-02-23T13:07:24Z"
+          }
+        },
+        {
+          "name": "em6257",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "u61799.wl050.sendgrid.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2021-01-02T01:42:59Z",
+            "updated_at": "2021-01-02T01:42:59Z"
+          }
+        },
+        {
+          "name": "s1._domainkey",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "s1.domainkey.u61799.wl050.sendgrid.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2021-01-02T01:43:12Z",
+            "updated_at": "2021-01-02T01:43:12Z"
+          }
+        },
+        {
+          "name": "s2._domainkey",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "s2.domainkey.u61799.wl050.sendgrid.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2021-01-02T01:43:25Z",
+            "updated_at": "2021-01-02T01:43:25Z"
+          }
+        },
+        {
+          "name": "url4584",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "sendgrid.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2021-01-02T01:43:37Z",
+            "updated_at": "2021-01-02T01:43:37Z"
+          }
+        },
+        {
+          "name": "61799",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "sendgrid.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2021-01-02T01:43:48Z",
+            "updated_at": "2021-01-02T01:43:48Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2023-11-09T08:35:17Z",
+            "updated_at": "2023-11-09T08:35:17Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple-edge.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2023-11-09T08:35:17Z",
+            "updated_at": "2023-11-09T08:35:17Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2023-11-09T08:35:18Z",
+            "updated_at": "2023-11-09T08:35:18Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple-edge.org",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2023-11-09T08:35:18Z",
+            "updated_at": "2023-11-09T08:35:18Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "lindylog.net",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010905 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:03Z",
+            "updated_at": "2024-05-03T18:01:36Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:03Z",
+            "updated_at": "2014-01-09T05:15:10Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:03Z",
+            "updated_at": "2014-01-09T05:15:09Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:03Z",
+            "updated_at": "2014-01-09T05:15:10Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:03Z",
+            "updated_at": "2014-01-09T05:15:10Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:31Z",
+            "updated_at": "2014-01-09T05:15:33Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:31Z",
+            "updated_at": "2014-01-09T05:15:33Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:31Z",
+            "updated_at": "2014-01-09T05:15:33Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:31Z",
+            "updated_at": "2024-02-23T13:07:31Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:15:31Z",
+            "updated_at": "2024-02-23T13:07:31Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "lindylog-cedar.herokuapp.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:06Z",
+            "updated_at": "2014-01-09T05:17:09Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for lindylog-cedar.herokuapp.com\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:06Z",
+            "updated_at": "2024-02-23T13:07:33Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "lindylog-cedar.herokuapp.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:17:06Z",
+            "updated_at": "2014-01-09T05:17:09Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "outage.party",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 1532626923 86400 7200 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:42:00Z",
+            "updated_at": "2024-02-23T13:07:49Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:42:00Z",
+            "updated_at": "2018-07-26T17:42:00Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:42:00Z",
+            "updated_at": "2018-07-26T17:42:00Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:42:00Z",
+            "updated_at": "2018-07-26T17:42:00Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:42:00Z",
+            "updated_at": "2018-07-26T17:42:00Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "dgl6xuan41dnf.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:45:02Z",
+            "updated_at": "2018-07-26T17:45:02Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for dgl6xuan41dnf.cloudfront.net\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:45:02Z",
+            "updated_at": "2024-02-23T13:07:49Z"
+          }
+        },
+        {
+          "name": "_14676a8005ace4350280bac364b8bd63",
+          "type": "CNAME",
+          "ttl": 60,
+          "content": "_4db2b193bba02d27e49884aa702c1b2b.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-07-26T17:54:47Z",
+            "updated_at": "2018-07-26T17:54:47Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "rhnh.net",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010909 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:54:48Z",
+            "updated_at": "2024-05-03T17:29:27Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:54:48Z",
+            "updated_at": "2014-01-09T04:54:54Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:54:48Z",
+            "updated_at": "2014-01-09T04:54:55Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:54:48Z",
+            "updated_at": "2014-01-09T04:54:55Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:54:48Z",
+            "updated_at": "2014-01-09T04:54:55Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 60,
+          "content": "d2llx8i3cqnxcv.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:30Z",
+            "updated_at": "2017-01-01T07:17:50Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 60,
+          "content": "\"ALIAS for d2llx8i3cqnxcv.cloudfront.net\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:30Z",
+            "updated_at": "2024-02-23T13:07:19Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 60,
+          "content": "d2llx8i3cqnxcv.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:30Z",
+            "updated_at": "2017-01-01T07:18:03Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:47Z",
+            "updated_at": "2014-01-09T04:55:50Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:47Z",
+            "updated_at": "2014-01-09T04:55:49Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:47Z",
+            "updated_at": "2014-01-09T04:55:51Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:47Z",
+            "updated_at": "2024-02-23T13:07:20Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:55:47Z",
+            "updated_at": "2024-02-23T13:07:20Z"
+          }
+        },
+        {
+          "name": "_6fbbb34e0e725355318436e3bd72fa9b",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_9d77ba460d7c845571962859ee6bd2e1.bcnrdwzwjt.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2022-10-09T04:31:31Z",
+            "updated_at": "2022-10-09T04:31:31Z"
+          }
+        },
+        {
+          "name": "_6dce3b8af42b389d093d894bfa9894f3.www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_cefd391ccc9fd074e24ad3783dd54387.bcnrdwzwjt.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2022-10-09T04:31:50Z",
+            "updated_at": "2022-10-09T04:31:50Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "tenarms.net",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010904 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:41:40Z",
+            "updated_at": "2024-05-03T17:24:57Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:41:40Z",
+            "updated_at": "2014-01-09T04:45:47Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:41:40Z",
+            "updated_at": "2014-01-09T04:45:47Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:41:40Z",
+            "updated_at": "2014-01-09T04:45:48Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:41:40Z",
+            "updated_at": "2014-01-09T04:45:48Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "A",
+          "ttl": 3600,
+          "content": "54.200.171.68",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T04:44:08Z",
+            "updated_at": "2014-01-09T04:45:48Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:22:01Z",
+            "updated_at": "2014-01-09T05:22:03Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:22:01Z",
+            "updated_at": "2014-01-09T05:22:03Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:22:01Z",
+            "updated_at": "2014-01-09T05:22:03Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:22:01Z",
+            "updated_at": "2024-02-23T13:07:42Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:22:01Z",
+            "updated_at": "2024-02-23T13:07:42Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "two-shay.com",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010916 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:35Z",
+            "updated_at": "2024-05-03T16:56:13Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:35Z",
+            "updated_at": "2014-01-09T05:20:40Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:35Z",
+            "updated_at": "2014-01-09T05:20:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:35Z",
+            "updated_at": "2014-01-09T05:20:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:35Z",
+            "updated_at": "2014-01-09T05:20:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:53Z",
+            "updated_at": "2014-01-09T05:20:55Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:53Z",
+            "updated_at": "2014-01-09T05:20:55Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:53Z",
+            "updated_at": "2014-01-09T05:20:57Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:53Z",
+            "updated_at": "2024-02-23T13:07:37Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:20:53Z",
+            "updated_at": "2024-02-23T13:07:37Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "d2g9bhuyjuqorw.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:00Z",
+            "updated_at": "2017-12-26T05:28:25Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for d2g9bhuyjuqorw.cloudfront.net\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:00Z",
+            "updated_at": "2024-02-23T13:07:39Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "d2g9bhuyjuqorw.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:00Z",
+            "updated_at": "2017-12-26T05:28:35Z"
+          }
+        },
+        {
+          "name": "_ea532065614f7b3177376e68336d1217",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_f4b9c7a02b4c901c40106f15f09c1266.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-12-14T06:57:56Z",
+            "updated_at": "2018-12-14T06:57:56Z"
+          }
+        },
+        {
+          "name": "_f4d03e78248ba1c6ed721a29777fc69f.www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_cde2787ce4a62d629fe476dc56791c7b.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2018-12-14T06:58:16Z",
+            "updated_at": "2018-12-14T06:58:16Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "veganmelbourne.com.au",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010912 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:09:45Z",
+            "updated_at": "2024-10-01T08:54:59Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:09:45Z",
+            "updated_at": "2014-01-09T05:09:51Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:09:45Z",
+            "updated_at": "2014-01-09T05:09:51Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:09:45Z",
+            "updated_at": "2014-01-09T05:09:51Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:09:45Z",
+            "updated_at": "2014-01-09T05:09:51Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "dwbz3y17dkc09.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:10:14Z",
+            "updated_at": "2016-12-28T05:43:49Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for dwbz3y17dkc09.cloudfront.net\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:10:14Z",
+            "updated_at": "2024-02-23T13:07:26Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "dwbz3y17dkc09.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:10:14Z",
+            "updated_at": "2016-12-28T05:43:54Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:44Z",
+            "updated_at": "2014-01-09T05:21:46Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:44Z",
+            "updated_at": "2014-01-09T05:21:47Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:44Z",
+            "updated_at": "2014-01-09T05:21:48Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:44Z",
+            "updated_at": "2024-02-23T13:07:40Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:21:44Z",
+            "updated_at": "2024-02-23T13:07:40Z"
+          }
+        },
+        {
+          "name": "_233f42ee4d779e3103e3b58cf9090b5c",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_3e0aa1c74941880fb1e93aa83dcf5503.djqtsrsxkq.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2024-10-01T08:54:37Z",
+            "updated_at": "2024-10-01T08:54:37Z"
+          }
+        },
+        {
+          "name": "_6b4dfc4925c45aebdb7cf9d9af47de54.www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_bb1cc0fbea68ebdd0b0edf8aefa6226b.djqtsrsxkq.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2024-10-01T08:54:59Z",
+            "updated_at": "2024-10-01T08:54:59Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "vegan-month.com",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014010905 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:09Z",
+            "updated_at": "2024-05-03T13:29:51Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:10Z",
+            "updated_at": "2014-01-09T05:14:15Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:10Z",
+            "updated_at": "2014-01-09T05:14:16Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:10Z",
+            "updated_at": "2014-01-09T05:14:16Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:10Z",
+            "updated_at": "2014-01-09T05:14:16Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "vegan-month.herokuapp.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:31Z",
+            "updated_at": "2014-01-09T05:14:33Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for vegan-month.herokuapp.com\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:31Z",
+            "updated_at": "2024-02-23T13:07:27Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "vegan-month.herokuapp.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:31Z",
+            "updated_at": "2014-01-09T05:14:33Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:39Z",
+            "updated_at": "2014-01-09T05:14:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:39Z",
+            "updated_at": "2014-01-09T05:14:41Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:39Z",
+            "updated_at": "2014-01-09T05:14:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:39Z",
+            "updated_at": "2024-02-23T13:07:28Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-09T05:14:39Z",
+            "updated_at": "2024-02-23T13:07:29Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "xaviershay.com",
+      "records": [
+        {
+          "name": "",
+          "type": "SOA",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com admin.dnsimple.com 2014011034 86400 10800 604800 300",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:20:35Z",
+            "updated_at": "2024-10-01T08:49:23Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns1.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:20:36Z",
+            "updated_at": "2014-01-10T23:20:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns2.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:20:36Z",
+            "updated_at": "2014-01-10T23:20:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns3.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:20:36Z",
+            "updated_at": "2014-01-10T23:20:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "NS",
+          "ttl": 3600,
+          "content": "ns4.dnsimple.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:20:36Z",
+            "updated_at": "2014-01-10T23:20:41Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "ALIAS",
+          "ttl": 3600,
+          "content": "d35moas0x4pv9r.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:23:10Z",
+            "updated_at": "2016-12-28T04:47:33Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"ALIAS for d35moas0x4pv9r.cloudfront.net\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:23:10Z",
+            "updated_at": "2024-02-23T13:07:44Z"
+          }
+        },
+        {
+          "name": "www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "d35moas0x4pv9r.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:23:10Z",
+            "updated_at": "2016-12-28T04:47:38Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in1-smtp.messagingengine.com",
+          "priority": 10,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:26:45Z",
+            "updated_at": "2014-01-10T23:26:48Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "MX",
+          "ttl": 3600,
+          "content": "in2-smtp.messagingengine.com",
+          "priority": 20,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:26:45Z",
+            "updated_at": "2014-01-10T23:26:48Z"
+          }
+        },
+        {
+          "name": "mail",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "www.fastmail.fm",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:26:45Z",
+            "updated_at": "2014-01-10T23:26:48Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "SPF",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:26:45Z",
+            "updated_at": "2024-02-23T13:07:45Z"
+          }
+        },
+        {
+          "name": "",
+          "type": "TXT",
+          "ttl": 3600,
+          "content": "\"v=spf1 include:spf.messagingengine.com ~all\"",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2014-01-10T23:26:45Z",
+            "updated_at": "2024-02-23T13:07:45Z"
+          }
+        },
+        {
+          "name": "blog",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "d2puzksnnvzvkd.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2016-12-28T05:39:37Z",
+            "updated_at": "2019-08-10T03:32:22Z"
+          }
+        },
+        {
+          "name": "sheets",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "d1ydiph2rmtzld.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2019-08-10T02:53:38Z",
+            "updated_at": "2019-08-10T02:53:38Z"
+          }
+        },
+        {
+          "name": "_059c6b2c4cb9015569fdb4601549e52a.peakyfinders",
+          "type": "CNAME",
+          "ttl": 60,
+          "content": "_d3e1a3e4eb35faf927fca6e00882d30f.vybhcgkthd.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2021-12-17T00:50:12Z",
+            "updated_at": "2021-12-17T00:54:02Z"
+          }
+        },
+        {
+          "name": "peakyfinders",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "d1g86hcaqn89ou.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2021-12-17T01:10:45Z",
+            "updated_at": "2023-01-26T00:14:36Z"
+          }
+        },
+        {
+          "name": "fm1._domainkey",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "fm1.xaviershay.com.dkim.fmhosted.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2022-04-11T22:11:07Z",
+            "updated_at": "2022-04-11T22:11:07Z"
+          }
+        },
+        {
+          "name": "fm2._domainkey",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "fm2.xaviershay.com.dkim.fmhosted.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2022-04-11T22:11:21Z",
+            "updated_at": "2022-04-11T22:11:21Z"
+          }
+        },
+        {
+          "name": "fm3._domainkey",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "fm3.xaviershay.com.dkim.fmhosted.com",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2022-04-11T22:11:37Z",
+            "updated_at": "2022-04-11T22:11:37Z"
+          }
+        },
+        {
+          "name": "_07c0bd879c92f3a19555d9b816d7b3bb.sheets",
+          "type": "CNAME",
+          "ttl": 600,
+          "content": "_f5acc99c93c3df36dcd8c1902eb43010.duyqrilejt.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2022-07-05T07:41:48Z",
+            "updated_at": "2022-07-05T07:41:48Z"
+          }
+        },
+        {
+          "name": "_913843815ffdf2bee3b5e1ee35832a01.mapshot",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_df09426a22343f2a35f0c6c6fab1a02a.fcgjwsnkyp.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2023-05-14T03:28:20Z",
+            "updated_at": "2023-05-14T03:28:20Z"
+          }
+        },
+        {
+          "name": "mapshot",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "d16m1c5goj0iug.cloudfront.net",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2023-05-14T05:32:14Z",
+            "updated_at": "2023-05-14T05:32:14Z"
+          }
+        },
+        {
+          "name": "_d362f15cc49c75c96c711e89f52c0b3e.blog",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_8b9a3692fc06098d884b7f83c2bbf398.djqtsrsxkq.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2024-10-01T08:45:56Z",
+            "updated_at": "2024-10-01T08:45:56Z"
+          }
+        },
+        {
+          "name": "_89089d7b424247383c3db6c8becf388a",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_107a4aba2373ccd033997a450d0d9c96.djqtsrsxkq.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2024-10-01T08:48:53Z",
+            "updated_at": "2024-10-01T08:48:53Z"
+          }
+        },
+        {
+          "name": "_8e3a6eaeb7b4d6ba08d5acae9fd76799.www",
+          "type": "CNAME",
+          "ttl": 3600,
+          "content": "_d0c015e30056fbdb2e638ef032fd6b1e.djqtsrsxkq.acm-validations.aws",
+          "priority": null,
+          "regions": [
+            "global"
+          ],
+          "metadata": {
+            "created_at": "2024-10-01T08:49:23Z",
+            "updated_at": "2024-10-01T08:49:23Z"
+          }
+        }
+      ]
+    }
+  ]
+}

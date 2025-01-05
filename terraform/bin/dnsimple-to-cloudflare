@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+require 'json'
+
+class DNSTransformer
+  def initialize(input_file)
+    @dns_config = JSON.parse(File.read(input_file), symbolize_names: true)
+  end
+
+  def transform
+    @dns_config[:zones].each do |zone|
+      # Transform ALIAS records to CNAME with @ name
+      alias_records = zone[:records].select { |r| r[:type] == 'ALIAS' }
+      alias_records.each do |record|
+        record[:type] = 'CNAME'
+        record[:name] = '@'
+      end
+
+      # Empty name not allowed, needs to be @
+      zone[:records].each do |record|
+        record[:name] = '@' if record[:name] == ""
+      end
+
+      # Remove TXT records that contain the string "ALIAS"
+      zone[:records].reject! do |record|
+        record[:type] == 'TXT' && record[:content].include?('ALIAS')
+      end
+
+      # Remove SOA and NS records. Also SPF because they're duped with TXT records.
+      zone[:records].reject! do |record|
+        %w(SOA NS SPF).include?(record[:type])
+      end
+    end
+
+    @dns_config
+  end
+
+  def save(output_file)
+    File.write(output_file, JSON.pretty_generate(@dns_config))
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  if ARGV.empty?
+    puts "Usage: #{$PROGRAM_NAME} <dns_configuration.json> [output_file]"
+    puts "If output_file is not specified, will use dns_configuration_transformed.json"
+    exit 1
+  end
+
+  input_file = ARGV[0]
+  output_file = ARGV[1] || 'dns_configuration_transformed.json'
+
+  unless File.exist?(input_file)
+    puts "Error: Input file '#{input_file}' not found"
+    exit 1
+  end
+
+  begin
+    transformer = DNSTransformer.new(input_file)
+    transformer.transform
+    transformer.save(output_file)
+    
+    puts "Transformed DNS configuration saved to '#{output_file}'"
+  rescue JSON::ParserError => e
+    puts "Error: Invalid JSON in input file - #{e.message}"
+    exit 1
+  rescue StandardError => e
+    puts "Error: #{e.message}"
+    exit 1
+  end
+end

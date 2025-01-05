@@ -1,4 +1,3 @@
-terraform/.dnsimple_account_id
-terraform/.dnsimple_token
+terraform/.dnsimple*
 terraform/api_cache/*
 terraform/terraform_output/*
