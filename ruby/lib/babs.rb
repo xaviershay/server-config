@@ -26,7 +26,7 @@ class Babs
     @logger = logger
   end
 
-  def apply(context = Context.new)
+  def apply(context = Context.new, filter: "")
     @context = context
     @completed = Set.new
     self.class.vars.each do |key, value|
@@ -34,6 +34,7 @@ class Babs
     end
     root = self.class.root
     root.each do |task_name|
+      next unless task_name.start_with?(filter)
       run_task(task_name)
     end
 

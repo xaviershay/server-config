@@ -229,6 +229,29 @@ class Styx < Babs
     'aws cli: configure'
   ]
 
+  task 'nginx: install' do
+    met? { run("sudo nginx -version 2>&1 || true").include?("nginx/1.22.1") }
+    meet {
+      run("sudo apt install nginx -y")
+    }
+  end
+  task 'nginx: enable', &systemctl_enable_task('nginx')
+  task 'nginx: run' do
+    met? { run("systemctl is-active --quiet nginx && echo OK").start_with?("OK") }
+    meet {
+      run("sudo systemctl restart nginx")
+    }
+  end
+  sftp_task 'nginx: configure', '/etc/nginx/conf.d/reverse-proxy.conf', 644,
+    after_meet: ->{ run("sudo nginx -s reload") }
+
+  task 'nginx', depends: [
+    'nginx: install',
+    'nginx: configure',
+    'nginx: run',
+    'nginx: enable'
+  ]
+
   sftp_task 'notify-on-fail', '/usr/local/bin/notify-on-fail', 755, depends: 'aws cli'
   sftp_task 'backup-influxdb', [
     '/usr/local/bin/backup-influxdb',
@@ -266,9 +289,10 @@ class Styx < Babs
     'telegraf',
     'grafana',
     'blocky',
+    'nginx'
   ]
 end
 
 Net::SSH.start('styx.local', 'xavier') do |ssh|
-  Styx.new.apply(SSHContext.new(ssh))
+  Styx.new.apply(SSHContext.new(ssh), filter: ARGV[0].to_s)
 end
