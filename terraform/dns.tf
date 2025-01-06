@@ -184,63 +184,6 @@ module "zone_eventhandapp_com" {
   context = module.cloudflare_label.context
 }
 
-module "zone_lindylog_net" {
-  source = "cloudposse/zone/cloudflare"
-  version = "1.0.1"
-
-  zone = "lindylog.net"
-  account_id = var.cloudflare_account_id
-  
-  records = [
-    {
-      name           = "@"
-      type           = "MX"
-      ttl            = 3600
-      value          = "in1-smtp.messagingengine.com"
-      priority       = 10
-      proxied        = false
-    },
-    {
-      name           = "@"
-      type           = "MX"
-      ttl            = 3600
-      value          = "in2-smtp.messagingengine.com"
-      priority       = 20
-      proxied        = false
-    },
-    {
-      name           = "mail"
-      type           = "CNAME"
-      ttl            = 3600
-      value          = "www.fastmail.fm"
-      proxied        = false
-    },
-    {
-      name           = "@"
-      type           = "TXT"
-      ttl            = 3600
-      value          = "\"v=spf1 include:spf.messagingengine.com ~all\""
-      proxied        = false
-    },
-    {
-      name           = "@"
-      type           = "CNAME"
-      ttl            = 3600
-      value          = "lindylog-cedar.herokuapp.com"
-      proxied        = false
-    },
-    {
-      name           = "www"
-      type           = "CNAME"
-      ttl            = 3600
-      value          = "lindylog-cedar.herokuapp.com"
-      proxied        = false
-    },
-  ]
-
-  context = module.cloudflare_label.context
-}
-
 module "zone_outage_party" {
   source = "cloudposse/zone/cloudflare"
   version = "1.0.1"
@@ -332,56 +275,6 @@ module "zone_rhnh_net" {
       type           = "CNAME"
       ttl            = 3600
       value          = "_cefd391ccc9fd074e24ad3783dd54387.bcnrdwzwjt.acm-validations.aws"
-      proxied        = false
-    },
-  ]
-
-  context = module.cloudflare_label.context
-}
-
-module "zone_tenarms_net" {
-  source = "cloudposse/zone/cloudflare"
-  version = "1.0.1"
-
-  zone = "tenarms.net"
-  account_id = var.cloudflare_account_id
-  
-  records = [
-    {
-      name           = "www"
-      type           = "A"
-      ttl            = 3600
-      value          = "54.200.171.68"
-      proxied        = false
-    },
-    {
-      name           = "@"
-      type           = "MX"
-      ttl            = 3600
-      value          = "in1-smtp.messagingengine.com"
-      priority       = 10
-      proxied        = false
-    },
-    {
-      name           = "@"
-      type           = "MX"
-      ttl            = 3600
-      value          = "in2-smtp.messagingengine.com"
-      priority       = 20
-      proxied        = false
-    },
-    {
-      name           = "mail"
-      type           = "CNAME"
-      ttl            = 3600
-      value          = "www.fastmail.fm"
-      proxied        = false
-    },
-    {
-      name           = "@"
-      type           = "TXT"
-      ttl            = 3600
-      value          = "\"v=spf1 include:spf.messagingengine.com ~all\""
       proxied        = false
     },
   ]
