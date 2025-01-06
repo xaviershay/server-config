@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+for DOMAIN in $(echo dbisyourfriend.com eventhandapp.com outage.party rhnh.net tenarms.net two-shay.com veganmelbourne.com.au vegan-month.com xaviershay.com); do
+    bin/generate-dns-spec $DOMAIN
+done

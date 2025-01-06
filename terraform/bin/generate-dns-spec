@@ -1,0 +1,187 @@
+#!/usr/bin/env ruby
+#
+# DNS Record Spec Generator
+# 
+# Generates RSpec tests for validating DNS records when migrating between DNS providers.
+# Specifically excludes:
+#  - NS records since those are expected to change during migration
+#  - A records at the apex domain since they are ALIAS records
+# Use this to verify that your new DNS provider is configured with the same records
+# as your old provider.
+#
+# Usage:
+#   NAMESERVER=1.1.1.1 ./dns_spec_generator.rb example.com
+
+require 'resolv'
+require 'rspec'
+require 'fileutils'
+
+class DNSSpecGenerator
+  RECORD_TYPES = [
+    Resolv::DNS::Resource::IN::A,
+    Resolv::DNS::Resource::IN::AAAA,
+    Resolv::DNS::Resource::IN::MX,
+    Resolv::DNS::Resource::IN::TXT,
+    Resolv::DNS::Resource::IN::CNAME
+  ]
+
+  def initialize(domain)
+    @domain = domain
+    @nameserver = ENV['NAMESERVER']
+    raise "Must specify NAMESERVER" unless @nameserver
+    config = {}
+    config[:nameserver] = [@nameserver] if @nameserver
+    @dns = Resolv::DNS.new(config)
+  end
+
+  def generate_spec
+    records = collect_records
+    generate_rspec_file(records)
+  end
+
+  private
+
+  def collect_records
+    records = {}
+    
+    RECORD_TYPES.each do |type|
+      begin
+        resources = @dns.getresources(@domain, type)
+        next if resources.empty?
+        
+        # Skip A and AAAA records at apex domain since they're ALIAS records
+        next if [Resolv::DNS::Resource::IN::AAAA, Resolv::DNS::Resource::IN::A].include?(type) && @domain == ARGV[0]
+        
+        records[type.name.split('::').last] = resources.map do |resource|
+          case type.name.split('::').last
+          when 'A', 'AAAA'
+            resource.address.to_s
+          when 'MX'
+            { preference: resource.preference, exchange: resource.exchange.to_s }
+          when 'TXT'
+            resource.strings.join('')
+          when 'CNAME'
+            resource.name.to_s
+          end
+        end
+      rescue Resolv::ResolvError => e
+        puts "Warning: Could not resolve #{type} records: #{e.message}"
+      end
+    end
+    
+    records
+  end
+
+  def generate_rspec_file(records)
+    FileUtils.mkdir_p('dns_spec')
+    
+    spec_content = <<~SPEC
+      require 'resolv'
+
+      RSpec.describe 'DNS Configuration for #{@domain}' do
+        let(:dns) do
+          config = {}
+          config[:nameserver] = ENV.fetch('NAMESERVER')
+          Resolv::DNS.new(config)
+        end
+    #{generate_record_tests(records)}
+      end
+    SPEC
+
+    spec_file = File.join('dns_spec', "#{@domain.gsub('.', '_')}_spec.rb")
+    File.write(spec_file, spec_content)
+    puts "Generated DNS spec file: #{spec_file}"
+    puts "Run with: cd dns_spec && NAMESERVER=<nameserver> rspec #{File.basename(spec_file)}"
+  end
+
+  def generate_record_tests(records)
+    tests = []
+    
+    records.each do |type, values|
+      if type == 'TXT'
+        # These were debug records and not included in migration
+        values.reject! {|x| x.include?('ALIAS') }
+      end
+
+      test = <<~TEST
+        
+        describe '#{type} records' do
+          let(:records) { dns.getresources('#{@domain}', Resolv::DNS::Resource::IN::#{type}) }
+
+          it 'has the correct number of records' do
+            expect(records.length).to eq(#{values.length})
+          end
+
+      TEST
+
+      case type
+      when 'A', 'AAAA'
+        test += generate_address_tests(values)
+      when 'MX'
+        test += generate_mx_tests(values)
+      when 'TXT'
+        test += generate_txt_tests(values)
+      when 'CNAME'
+        test += generate_name_tests(values)
+      end
+
+      test += "    end\n"
+      tests << test
+    end
+
+    tests.join("\n")
+  end
+
+  def generate_address_tests(addresses)
+    addresses.map do |addr|
+      <<~TEST
+          it 'includes #{addr}' do
+            expect(records.map(&:address).map(&:to_s)).to include('#{addr}')
+          end
+      TEST
+    end.join("\n")
+  end
+
+  def generate_mx_tests(mx_records)
+    mx_records.map do |mx|
+      <<~TEST
+          it 'includes MX record with preference #{mx[:preference]} and exchange #{mx[:exchange]}' do
+            matching_record = records.find do |r|
+              r.preference == #{mx[:preference]} && r.exchange.to_s == '#{mx[:exchange]}'
+            end
+            expect(matching_record).not_to be_nil
+          end
+      TEST
+    end.join("\n")
+  end
+
+  def generate_txt_tests(txt_records)
+    txt_records.map do |txt|
+      <<~TEST
+          it 'includes TXT record "#{txt}"' do
+            expect(records.map(&:strings).map { |s| s.join('') }).to include('#{txt}')
+          end
+      TEST
+    end.compact.join("\n")
+  end
+
+  def generate_name_tests(names)
+    names.map do |name|
+      <<~TEST
+          it 'includes #{name}' do
+            expect(records.map(&:name).map(&:to_s)).to include('#{name}')
+          end
+      TEST
+    end.join("\n")
+  end
+end
+
+if $0 == __FILE__
+  if ARGV.empty?
+    puts "Usage: NAMESERVER=1.1.1.1 #{$0} <domain>"
+    exit 1
+  end
+
+  generator = DNSSpecGenerator.new(ARGV[0])
+  generator.generate_spec
+end
