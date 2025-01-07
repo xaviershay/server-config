@@ -4,6 +4,6 @@
  influx setup \
    --username admin \
    --password <%= v 'influxdb.password' %> \
-   --org <%= v 'hostname' %> \
+   --org <%= v 'influxdb.org' %> \
    --bucket system \
    --force

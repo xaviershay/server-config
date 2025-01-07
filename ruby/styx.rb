@@ -72,7 +72,8 @@ class Styx < Babs
 
   {
     grafana: {read: ['system', 'sensors']},
-    telegraf: {write: ['system']}
+    telegraf: {write: ['system']},
+    awair: {write: ['sensors']}
   }.each do |description, permissions|
     deps = permissions.values.flatten.map {|x| 'ensure influxdb bucket: %s' % x }
     task "ensure influxdb token: #{description}", depends: deps do
@@ -258,14 +259,50 @@ class Styx < Babs
     '/etc/cron.d/cron.daily/run-backup-influxdb'
   ], 755, depends: 'aws cli'
 
+  task 'ruby' do
+    met? { run("ruby -v || true").include?("ruby 3.1.2") }
+    meet {
+      run("sudo apt install ruby -y")
+    }
+  end
+
+  sftp_task 'awair: install', '/usr/local/bin/awair-to-influxdb', 755, depends: 'ruby'
+  sftp_task 'awair: configure', [
+    '/usr/local/etc/awair/config.yml',
+    '/etc/systemd/system/awair.service'
+  ], 644,
+    depends: 'ensure influxdb token: awair',
+    after_meet: ->{ run("sudo systemctl restart awair") }
+
+  task 'awair: run' do
+    met? { run("systemctl is-active --quiet awair && echo OK").start_with?("OK") }
+    meet {
+      run("sudo systemctl restart awair")
+    }
+  end
+
+  task 'awair', depends: [
+    'awair: install',
+    'awair: configure',
+    'awair: run'
+  ]
+  # TODO: Ruby apt install
+
+
+  task 'blocky: enable', &systemctl_enable_task('blocky')
+
   variables \
     'hostname' => 'styx',
+    'influxdb.host' => '192.168.1.2', # TODO: 'influxdb.home',
     'influxdb.port' => 8086,
+    'influxdb.org' => 'styx',
     'grafana.port' => 3000,
     'blocky.port' => 4000,
     'influxdb.password' => secret('influxdb_password'),
     'grafana.password' => secret('grafana_password'),
     'telegraf.influxdb.bucket' => 'system',
+    'awair.host' => '192.168.1.3', # TODO: 'awair.home',
+    'awair.influxdb.bucket' => 'sensors',
     'aws.buckets.backup' => 'xaviershay-backups', # TODO: From terraform
     'aws.infra_alerts_sns_topic_arn' => 'arn:aws:sns:ap-southeast-4:615749242856:infra-alerts', # TODO: Fetch from terraform
     'aws.region' => 'ap-southeast-4', # Melbourne
@@ -289,7 +326,8 @@ class Styx < Babs
     'telegraf',
     'grafana',
     'blocky',
-    'nginx'
+    'nginx',
+    'awair'
   ]
 end
 

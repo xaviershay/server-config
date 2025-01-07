@@ -1,0 +1,137 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'uri'
+require 'json'
+require 'time'
+require 'yaml'
+require 'optparse'
+
+class AwairCollector
+  def initialize(config_path)
+    load_config(config_path)
+    @debug_mode = false
+  end
+
+  def load_config(path)
+    begin
+      @config = YAML.load_file(path)
+      validate_config
+    rescue Errno::ENOENT
+      abort "Error: Config file not found at #{path}"
+    rescue Psych::SyntaxError
+      abort "Error: Invalid YAML syntax in config file #{path}"
+    end
+  end
+
+  def validate_config
+    required_keys = %w[
+      awair_url
+      influxdb_host
+      influxdb_port
+      influxdb_org
+      influxdb_bucket
+      influxdb_token
+      poll_interval
+    ]
+    
+    missing_keys = required_keys - @config.keys
+    unless missing_keys.empty?
+      abort "Error: Missing required config keys: #{missing_keys.join(', ')}"
+    end
+  end
+
+  def fetch_awair_data
+    uri = URI(@config['awair_url'])
+    response = Net::HTTP.get_response(uri)
+    
+    if response.is_a?(Net::HTTPSuccess)
+      JSON.parse(response.body)
+    else
+      raise "Failed to fetch Awair data: #{response.code} #{response.message}"
+    end
+  rescue => e
+    puts "[#{Time.now}] Error fetching Awair data: #{e.message}"
+    nil
+  end
+
+  def format_line_protocol(data)
+    timestamp = Time.parse(data['timestamp']).to_i
+    
+    fields = %w[score dew_point temp humid abs_humid co2 co2_est co2_est_baseline 
+                voc voc_baseline voc_h2_raw voc_ethanol_raw pm25 pm10_est].map do |field|
+      "#{field}=#{data[field]}"
+    end.join(',')
+    
+    "air_quality,sensor=awair #{fields} #{timestamp}"
+  end
+
+  def write_to_influxdb(line_data)
+    uri = URI("http://#{@config['influxdb_host']}:#{@config['influxdb_port']}/api/v2/write")
+    uri.query = URI.encode_www_form(
+      org: @config['influxdb_org'],
+      bucket: @config['influxdb_bucket'],
+      precision: 's'
+    )
+    
+    request = Net::HTTP::Post.new(uri)
+    request['Authorization'] = "Token #{@config['influxdb_token']}"
+    request['Content-Type'] = 'text/plain'
+    request.body = line_data
+    
+    response = Net::HTTP.start(uri.hostname, uri.port) do |http|
+      http.request(request)
+    end
+    
+    unless response.is_a?(Net::HTTPSuccess)
+      raise "Failed to write to InfluxDB: #{response.code} #{response.message}"
+    end
+  end
+
+  def run(debug: false)
+    @debug_mode = debug
+    puts "[#{Time.now}] Starting Awair data collection from #{@config['awair_url']} #{@debug_mode ? ' in debug mode' : ''}..."
+    
+    loop do
+      begin
+        if data = fetch_awair_data
+          line_data = format_line_protocol(data)
+          write_to_influxdb(line_data) unless @debug
+          puts "[#{Time.now}] Success: #{line_data}"
+        end
+      rescue => e
+        puts "[#{Time.now}] Error in main loop: #{e.message}"
+      end
+      
+      sleep @config['poll_interval']
+    end
+  end
+end
+
+# Parse command line arguments
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} -c CONFIG_FILE [--debug]"
+
+  opts.on("-c", "--config CONFIG_FILE", "Path to config file") do |c|
+    options[:config] = c
+  end
+
+  opts.on("-d", "--debug", "Run in debug mode") do |d|
+    options[:debug] = d
+  end
+
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Verify config file was provided
+unless options[:config]
+  abort "Error: Config file path is required. Use -h for help."
+end
+
+# Run the collector
+collector = AwairCollector.new(options[:config])
+collector.run(debug: options[:debug])

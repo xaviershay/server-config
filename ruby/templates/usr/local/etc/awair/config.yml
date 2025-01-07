@@ -1,0 +1,8 @@
+awair_url: 'http://<%= v 'awair.host' %>/air-data/latest'
+influxdb_host: <%= v 'influxdb.host' %>
+influxdb_port: <%= v 'influxdb.port' %>
+influxdb_org: <%= v 'influxdb.org' %>
+influxdb_bucket: <%= v 'awair.influxdb.bucket' %>
+influxdb_token: <%= v 'awair.influxdb.api_token' %>
+
+poll_interval: 2  # seconds

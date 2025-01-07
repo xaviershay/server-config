@@ -1,0 +1,12 @@
+[Unit]
+Description=Awair air quality monitor to influxDB bridge
+
+[Service]
+Type=simple
+User=xavier
+ExecStart=/usr/local/bin/awair-to-influxdb --config /usr/local/etc/awair/config.yml
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

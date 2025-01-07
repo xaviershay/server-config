@@ -23,3 +23,4 @@ customDNS:
   filterUnmappedTypes: true
   mapping:
     styx.home: 192.168.1.2
+    awair.home: 192.168.1.3
