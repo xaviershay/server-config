@@ -286,14 +286,13 @@ class Styx < Babs
     'awair: configure',
     'awair: run'
   ]
-  # TODO: Ruby apt install
 
 
   task 'blocky: enable', &systemctl_enable_task('blocky')
 
   variables \
     'hostname' => 'styx',
-    'influxdb.host' => '192.168.1.2', # TODO: 'influxdb.home',
+    'influxdb.host' => 'influxdb.home',
     'influxdb.port' => 8086,
     'influxdb.org' => 'styx',
     'grafana.port' => 3000,
@@ -301,7 +300,7 @@ class Styx < Babs
     'influxdb.password' => secret('influxdb_password'),
     'grafana.password' => secret('grafana_password'),
     'telegraf.influxdb.bucket' => 'system',
-    'awair.host' => '192.168.1.3', # TODO: 'awair.home',
+    'awair.host' => 'awair.home',
     'awair.influxdb.bucket' => 'sensors',
     'aws.buckets.backup' => 'xaviershay-backups', # TODO: From terraform
     'aws.infra_alerts_sns_topic_arn' => 'arn:aws:sns:ap-southeast-4:615749242856:infra-alerts', # TODO: Fetch from terraform

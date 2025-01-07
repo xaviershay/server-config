@@ -22,5 +22,10 @@ customDNS:
   customTTL: 24h
   filterUnmappedTypes: true
   mapping:
+    # This resolves *.styx.home also, which is used to reverse proxy web
+    # interfaces for various services.
     styx.home: 192.168.1.2
+
+    influxdb.home: 192.168.1.2
+    grafana.home: 192.168.1.2
     awair.home: 192.168.1.3
