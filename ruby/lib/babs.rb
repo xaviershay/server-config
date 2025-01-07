@@ -90,7 +90,10 @@ class Babs
       task_name = name + ": #{file}"
       task task_name, depends: depends do
         met? {
-          @local_content = ERB.new(File.read("templates/#{file}")).result(binding)
+          filename = File.join("templates", file)
+          erb = ERB.new(File.read(filename))
+          erb.filename = filename
+          @local_content = erb.result(binding)
           remote_digest = run("sudo md5sum #{file} | head -c 32")
           remote_perms, remote_group = *run("sudo stat -c '%a %G' #{file} || true").split(" ")
           local_digest = Digest::MD5.hexdigest(@local_content)
