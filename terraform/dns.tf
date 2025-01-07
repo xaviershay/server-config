@@ -277,6 +277,27 @@ module "zone_rhnh_net" {
       value          = "_cefd391ccc9fd074e24ad3783dd54387.bcnrdwzwjt.acm-validations.aws"
       proxied        = false
     },
+    {
+      name           = "fm1._domainkey"
+      type           = "CNAME"
+      ttl            = 3600
+      value          = "fm1.rhnh.net.dkim.fmhosted.com"
+      proxied        = false
+    },
+    {
+      name           = "fm2._domainkey"
+      type           = "CNAME"
+      ttl            = 3600
+      value          = "fm2.rhnh.net.dkim.fmhosted.com"
+      proxied        = false
+    },
+    {
+      name           = "fm3._domainkey"
+      type           = "CNAME"
+      ttl            = 3600
+      value          = "fm3.rhnh.net.dkim.fmhosted.com"
+      proxied        = false
+    },
   ]
 
   context = module.cloudflare_label.context
