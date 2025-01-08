@@ -1,9 +1,7 @@
 # Server Config
 
-Automated configuration scripts for my personal stuff.
-
-Right now it's a single Raspberry Pi (custom script) and some assorted cloud
-services (terraform).
+Automated configuration scripts for my personal stuff, including a Raspberry Pi,
+assorted cloud services, and some homebrew IoT devices.
 
 ## Setup & Usage
 
@@ -44,3 +42,7 @@ This choice is motivated by a number of factors:
 * It's only me using it and I know exactly what I want.
 * Framework is small enough I could rewrite it in a day.
 * It's fun.
+
+### IoT
+
+See `iot/README.md`.
