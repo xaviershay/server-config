@@ -172,7 +172,7 @@ class Styx < Babs
   end
 
   sftp_task 'blocky: configure', [
-    '/etc/blocky/config.yml',
+    '/usr/local/etc/blocky/config.yml',
     '/etc/systemd/system/blocky.service'
   ], 644,
     after_meet: ->{ run("sudo systemctl restart blocky") }
