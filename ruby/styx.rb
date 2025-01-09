@@ -142,7 +142,9 @@ class Styx < Babs
     '/etc/grafana/grafana.ini',
     '/etc/grafana/provisioning/datasources/influxdb.yml',
     '/etc/grafana/provisioning/dashboards/default.yml',
-    '/etc/grafana/dashboards/host-health.json'
+    '/etc/grafana/dashboards/host-health.json',
+    '/etc/grafana/dashboards/air-quality.json',
+    '/etc/grafana/dashboards/air-quality-mobile.json',
   ], 640,
    group: 'grafana',
    depends: 'ensure influxdb token: grafana',
