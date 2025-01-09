@@ -22,8 +22,9 @@ end
 TaskSpec = Data.define(:name, :depends, :block)
 
 class Babs
-  def initialize(logger: $stdout)
+  def initialize(logger: $stdout, meet: true)
     @logger = logger
+    @meet = meet
   end
 
   def apply(context = Context.new, filter: "")
@@ -56,6 +57,7 @@ class Babs
       met = @context.instance_exec(&t._met)
       @logger.puts "%s %s" % [met ? "✓" : "✗", task_name]
       unless met
+        raise "unmet task: #{task_name}" unless @meet
         @context.instance_exec(&t._meet)
         met = @context.instance_exec(&t._met)
         @logger.puts "%s %s" % [met ? "✓" : "✗", task_name]
