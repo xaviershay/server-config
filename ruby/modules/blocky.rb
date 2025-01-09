@@ -12,14 +12,8 @@ class Styx
   ], 644,
     after_meet: ->{ run("sudo systemctl restart blocky") }
 
-  task 'blocky: run' do
-    met? { run("systemctl is-active --quiet blocky && echo OK").start_with?("OK") }
-    meet {
-      run("sudo systemctl restart blocky")
-    }
-  end
-
   task 'blocky: enable', &systemctl_enable_task('blocky')
+  task 'blocky: run', &systemctl_run_task('blocky')
 
   task 'blocky', depends: [
     'blocky: install',

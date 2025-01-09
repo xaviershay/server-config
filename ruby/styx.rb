@@ -16,6 +16,15 @@ class Styx < Babs
     }
   end
 
+  def self.systemctl_run_task(service)
+    ->{
+      met? { run("systemctl is-active --quiet #{service} && echo OK").start_with?("OK") }
+      meet {
+        run("sudo systemctl restart #{service}")
+      }
+    }
+  end
+
   variables \
     'hostname' => 'styx',
     'influxdb.host' => 'influxdb.home',

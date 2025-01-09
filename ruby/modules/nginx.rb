@@ -6,12 +6,8 @@ class Styx
     }
   end
   task 'nginx: enable', &systemctl_enable_task('nginx')
-  task 'nginx: run' do
-    met? { run("systemctl is-active --quiet nginx && echo OK").start_with?("OK") }
-    meet {
-      run("sudo systemctl restart nginx")
-    }
-  end
+  task 'nginx: run', &systemctl_run_task('nginx')
+
   sftp_task 'nginx: configure', '/etc/nginx/conf.d/reverse-proxy.conf', 644,
     after_meet: ->{ run("sudo nginx -s reload") }
 

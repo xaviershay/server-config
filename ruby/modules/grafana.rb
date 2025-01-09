@@ -18,14 +18,8 @@ class Styx
    depends: 'ensure influxdb token: grafana',
    after_meet: ->{ run("sudo systemctl restart grafana-server") }
 
-  task 'grafana: run' do
-    met? { run("systemctl is-active --quiet grafana-server && echo OK").start_with?("OK") }
-    meet {
-      run("sudo systemctl restart grafana-server")
-    }
-  end
-
   task 'grafana: enable', &systemctl_enable_task('grafana-server')
+  task 'grafana: run', &systemctl_run_task('grafana-server')
 
   task 'grafana', depends: [
     'grafana: install',

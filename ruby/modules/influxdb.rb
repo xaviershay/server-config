@@ -6,13 +6,6 @@ class Styx
     }
   end
 
-  task 'influxdb: run' do
-    met? { run("influx ping || true").start_with?("OK") }
-    meet {
-      run("sudo systemctl restart influxdb")
-    }
-  end
-
   sftp_task 'influxdb: configure', '/etc/influxdb2/config.yml', 644,
     after_meet: ->{ run("sudo systemctl restart influxdb") }
 
@@ -30,6 +23,7 @@ class Styx
   end
 
   task 'influxdb: enable', &systemctl_enable_task('influxdb')
+  task 'influxdb: run', &systemctl_run_task('influxdb')
 
   task 'influxdb', depends: [
     'influxdb: install',

@@ -7,7 +7,7 @@ class Styx
   task 'aws cli: install' do
     met? { run("aws --version || true").start_with?("aws-cli/2.9.19") }
     meet {
-      run("sudo apt install awscli")
+      run("sudo apt install awscli -y")
     }
   end
 

@@ -11,14 +11,8 @@ class Styx
    group: 'telegraf',
    after_meet: ->{ run("sudo systemctl restart telegraf") }
 
-  task 'telegraf: run' do
-    met? { run("systemctl is-active --quiet telegraf && echo OK").start_with?("OK") }
-    meet {
-      run("sudo systemctl restart telegraf")
-    }
-  end
-
   task 'telegraf: enable', &systemctl_enable_task('telegraf')
+  task 'telegraf: run', &systemctl_run_task('telegraf')
 
   task 'telegraf', depends: [
     'telegraf: install',
