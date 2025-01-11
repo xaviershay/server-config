@@ -5,7 +5,7 @@
 # * Ensures hostname.local is advertised on the network (avahi)
 #
 # Usage:
-#    ssh-copy-id $HOST
+#    ssh-copy-id root@$HOST
 #    ssh root@$HOST 'bash -s' < bootstrap.bash
 
 set -ex
