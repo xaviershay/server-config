@@ -1,24 +1,15 @@
 #include <ESP8266WiFiMulti.h>
 #include <InfluxDbClient.h>
+#include <DHT20.h>
 #include "constants.h"
 
-// #define DEBUG 1
-
-ESP8266WiFiMulti wifiMulti;
-
+// On-board LED for NodeMCU 1.0
 #define PIN_LED 2
 
+ESP8266WiFiMulti wifiMulti;
 InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN);
 Point sensor("air_quality");
-
-// Set timezone string according to https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html
-#define TZ_INFO "CET-1CEST,M3.5.0,M10.5.0/3"
-
-#include <DHT.h>
-#define Type DHT11
-
-int sensePin = 4;
-DHT HT(sensePin,Type);
+DHT20 HT;
 
 // From DHT11 spec "When power supplied to the sensor, do not send any
 // instruction [for 1s]"
@@ -31,7 +22,8 @@ void setup() {
   // LOW turns it on for some reason.
   digitalWrite(PIN_LED, LOW);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
+  Wire.begin();
   HT.begin();
 
   WiFi.mode(WIFI_STA);
@@ -46,7 +38,7 @@ void setup() {
   sensor.addTag("sensor", DEVICE);
   timeSync(TZ_INFO, "pool.ntp.org", "time.nis.gov");
 
-    // Check server connection
+  // Check server connection
   if (client.validateConnection()) {
     Serial.print("Connected to InfluxDB: ");
     Serial.println(client.getServerUrl());
@@ -61,13 +53,13 @@ void setup() {
 void loop() {
   // Clear fields for reusing the point. Tags will remain untouched
   sensor.clearFields();
-
-  float h = HT.readHumidity();
-  float t = HT.readTemperature();
+  int status = HT.read();
+  float h = HT.getHumidity();
+  float t = HT.getTemperature();
 
   // Going to assume 0% humidity not a thing, I've seen it
   // as a return value errantly.
-  if (isnan(h) || isnan(t) || h <= 0.1) {
+  if (status != DHT20_OK) {
     digitalWrite(PIN_LED, LOW);
     #ifdef DEBUG
       Serial.println("Error reading from sensor");
@@ -76,7 +68,7 @@ void loop() {
     sensor.addField("humid", h);
     sensor.addField("temp", t);
 
-    // Serial writes are disable in production to avoid flashing the serial LED
+    // Serial writes are disabled in production to avoid flashing the serial LED
     #ifdef DEBUG
       Serial.print("Writing: ");
       Serial.println(sensor.toLineProtocol());
@@ -94,6 +86,5 @@ void loop() {
     }
   }
 
-  // DHT library caches any value read sooner than 2s.
-  delay(2000);
+  delay(1000);
 }
