@@ -28,3 +28,8 @@ AcceptEnv LANG LC_*
 
 # override default of no subsystems
 Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+# By the time the machine is under config management, we shouldn't need either
+# of these anymore.
+PermitRootLogin No
+PasswordAuthentication No

@@ -43,6 +43,14 @@ class Styx < Babs
     'aws.access_key_id' => secret('aws_access_key_id'),
     'aws.secret_access_key' => secret('aws_secret_access_key')
 
+  # Fan settings
+  # Not sure why this executable, but matches what was there
+  sftp_task 'boot_config', '/boot/firmware/config.txt', 755
+
+  task 'styx', depends: [
+    'boot_config'
+  ]
+
   root_task [
     'system',
     'influxdb',
@@ -50,7 +58,8 @@ class Styx < Babs
     'grafana',
     'blocky',
     'nginx',
-    'awair'
+    'awair',
+    'styx'
   ]
 end
 

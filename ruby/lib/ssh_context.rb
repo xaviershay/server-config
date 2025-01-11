@@ -18,8 +18,8 @@ class SSHContext < Context
 
   def upload_file(file, content, perms, group: nil)
     temp_file = "/tmp/#{File.basename(file)}"
-    # TODO: Don't hard code host here. And maybe try to reuse SFTP connection
-    Net::SFTP.start('styx.local', 'xavier') do |sftp|
+    run("sudo rm -f #{temp_file}")
+    Net::SFTP.start(@ssh.host, 'xavier') do |sftp|
       sftp.file.open(temp_file, "w", 600) do |f|
         f.write(content)
       end
