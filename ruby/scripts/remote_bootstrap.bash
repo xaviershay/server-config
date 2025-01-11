@@ -26,8 +26,7 @@ else
    exit 1
 fi
 
-# Create user and add to sudo group
-useradd -m $USER || true
+# User was created by install, so no need to create here
 usermod -aG sudo $USER
 
 echo "$USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USER

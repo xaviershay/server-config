@@ -23,7 +23,7 @@ class Styx < Babs
     ->{
       met? { !run("test -f #{dir}/README.md || echo NO").include?("NO") }
       meet do
-        run("rm -r #{dir}")
+        run("rm -rf #{dir}")
         run("mkdir -p #{dir}")
         run("git clone git@github.com:#{repo}.git #{dir}")
       end
@@ -36,6 +36,7 @@ class Styx < Babs
   )
 
   sftp_task 'ssh', '/home/xavier/.ssh/known_hosts', 644
+  sftp_task 'dir-watcher', '/usr/local/bin/dir-watcher', 755
 
   repo_tasks = REPOS.map do |name|
     repo = "xaviershay/#{name}"
@@ -44,7 +45,7 @@ class Styx < Babs
     end
   end
 
-  %w(make wget).each do |package|
+  %w(make wget rsync).each do |package|
     task "apt: #{package}", &apt_package(package)
   end
 
@@ -65,7 +66,9 @@ class Styx < Babs
   root_task [
     'dev: ruby',
     'dev: terraform',
-    'sshd: configure'
+    'apt: rsync',
+    'sshd: configure',
+    'dir-watcher'
   ] + repo_tasks
 end
 

@@ -1,0 +1,115 @@
+#!/bin/bash
+
+# Parse flags
+NO_CONTENT=false
+while getopts "s" opt; do
+    case $opt in
+        s) NO_CONTENT=true ;;
+        \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+# Check for minimum arguments
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 [-s] <directory-to-watch> <command> [args...]"
+    echo "Options:"
+    echo "  -s    Watch only for file additions/deletions (ignore content changes)"
+    echo "Example: $0 ./src node server.js"
+    echo "         $0 -s ./src python app.py"
+    exit 1
+fi
+
+# Configuration
+WATCH_DIR="$1"        # First argument is directory to watch
+shift                 # Remove first argument, leaving command and its args
+COMMAND="$1"         # First remaining argument is the command
+shift                # Remove command, leaving just the args
+ARGS="$@"           # Rest of arguments are args for the command
+CHECK_INTERVAL=1     # How often to check for changes (seconds)
+
+# Verify watch directory exists
+if [ ! -d "$WATCH_DIR" ]; then
+    echo "Error: Directory '$WATCH_DIR' does not exist"
+    exit 1
+fi
+
+# Variables to track state
+last_hash=""
+pid=""
+
+# Function to calculate directory hash
+get_dir_hash() {
+    if [ "$NO_CONTENT" == true ]; then
+        # Only watch for file existence
+        find "$WATCH_DIR" -type f -printf "%P\n" 2>/dev/null | sort | md5sum
+    else
+        # Watch file contents too
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            find "$WATCH_DIR" -type f -exec stat -f "%m%z%N" {} \; | sort | md5sum
+        else
+            # Linux and others
+            find "$WATCH_DIR" -type f -exec stat -c "%Y%s%n" {} \; | sort | md5sum
+        fi
+    fi
+}
+
+# Function to start the process
+start_process() {
+    if [ -n "$pid" ]; then
+        echo "Stopping previous process (PID: $pid)..."
+        kill -TERM $pid 2>/dev/null || true
+
+        # Wait for process to stop (max 5 seconds)
+        for i in {1..5}; do
+            if ! kill -0 $pid 2>/dev/null; then
+                break
+            fi
+            sleep 1
+        done
+
+        # Force kill if still running
+        kill -KILL $pid 2>/dev/null || true
+    fi
+
+    echo "Starting process: $COMMAND $ARGS"
+    $COMMAND $ARGS &
+    pid=$!
+    echo "Process started with PID: $pid"
+}
+
+# Function to cleanup on exit
+cleanup() {
+    echo -e "\nCleaning up..."
+    if [ -n "$pid" ]; then
+        kill -TERM $pid 2>/dev/null || true
+        sleep 1
+        kill -KILL $pid 2>/dev/null || true
+    fi
+    exit 0
+}
+
+# Set up cleanup trap
+trap cleanup INT TERM
+
+# Initial start
+echo "Starting initial process..."
+start_process
+last_hash=$(get_dir_hash)
+
+echo "Watching directory: $WATCH_DIR"
+echo "Press Ctrl+C to stop"
+
+# Main loop
+while true; do
+    current_hash=$(get_dir_hash)
+
+    if [ "$current_hash" != "$last_hash" ]; then
+        echo "Change detected, restarting process..."
+        start_process
+        last_hash=$current_hash
+    fi
+
+    sleep $CHECK_INTERVAL
+done

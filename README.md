@@ -41,12 +41,14 @@ password SSH access for root (`/etc/ssh/sshd_config`) to enable bootstrap. I
 have a proxmox snapshot and clone of this state.
 
     cd ruby
+    export HOST=192.168.1.X # Edit to taste
     ssh-copy-id root@$HOST
-    ssh root@$HOST 'bash -s' < scripts/bootstrap.bash
+    scripts/local_bootstrap.bash $HOST
 
-    # Re-use existing SSH credentials rather than generating new ones so that we
-    # don't also need to e.g. configure Github for new keys.
-    scp ~/.ssh/id_rsa* $HOST:.ssh/
+On windows, Visual Studio Code may use a different SSH key than WSL, and
+something like the following may be needed:
+
+    cat /mnt/c/Users/$USERNAME/.ssh/id_rsa.pub | ssh $HOST 'cat - >> .ssh/authorized_keys'
 
 AWS secrets are needed as these are required by terraform. (A `tfvars` file will
 also be needed depending on which modules are being developed.)
