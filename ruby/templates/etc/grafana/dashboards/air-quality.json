@@ -52,6 +52,8 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "axisSoftMax": 70,
+            "axisSoftMin": 30,
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
@@ -239,7 +241,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "data = from(bucket: \"sensors\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"air_quality\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"humid\")\r\n\r\nerror = (r) => if r.sensor =~ /awair/ then 2.0 else 5.0\r\n\r\nmeanValue = data\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> keep(columns: [\"_time\", \"sensor\", \"_value\"])\r\n  |> map(fn: (r) => ({r with aggr: \"mean\"}))\r\n\r\nmaxValue = meanValue |> map(fn: (r) => ({r with aggr: \"max\", _value: r._value + error(r)}))\r\n\r\nminValue = meanValue |> map(fn: (r) => ({r with aggr: \"min\", _value: r._value - error(r)}))\r\n\r\nunion(tables: [meanValue, maxValue, minValue])\r\n  |> pivot(rowKey: [\"_time\", \"sensor\"], columnKey: [\"aggr\"], valueColumn: \"_value\")\r\n  |> yield(name: \"values\")\r\n",
+          "query": "data = from(bucket: \"sensors\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"air_quality\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"humid\")\r\n\r\nerror = (r) => if r.sensor =~ /awair/ then 2.0 else 3.0\r\n\r\nmeanValue = data\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> keep(columns: [\"_time\", \"sensor\", \"_value\"])\r\n  |> map(fn: (r) => ({r with aggr: \"mean\"}))\r\n\r\nmaxValue = meanValue |> map(fn: (r) => ({r with aggr: \"max\", _value: r._value + error(r)}))\r\n\r\nminValue = meanValue |> map(fn: (r) => ({r with aggr: \"min\", _value: r._value - error(r)}))\r\n\r\nunion(tables: [meanValue, maxValue, minValue])\r\n  |> pivot(rowKey: [\"_time\", \"sensor\"], columnKey: [\"aggr\"], valueColumn: \"_value\")\r\n  |> yield(name: \"values\")\r\n",
           "refId": "A"
         }
       ],
@@ -254,13 +256,13 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Air Quality",
   "uid": "ce9eznqkdtloge",
-  "version": 5,
+  "version": 8,
   "weekStart": ""
 }
