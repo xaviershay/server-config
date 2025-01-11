@@ -13,7 +13,7 @@ set -ex
 USER="xavier"
 
 # Ensure deps are present
-apt install sudo avahi-daemon -y
+apt-get install sudo avahi-daemon -y
 
 if command -v systemctl >/dev/null 2>&1; then
    systemctl enable avahi-daemon

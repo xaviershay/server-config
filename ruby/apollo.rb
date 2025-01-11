@@ -21,8 +21,9 @@ class Styx < Babs
 
     dir = "~/code/#{name}"
     ->{
-      met? { !run("test -d #{dir} || echo NO").include?("NO") }
+      met? { !run("test -f #{dir}/README.md || echo NO").include?("NO") }
       meet do
+        run("rm -r #{dir}")
         run("mkdir -p #{dir}")
         run("git clone git@github.com:#{repo}.git #{dir}")
       end

@@ -44,6 +44,10 @@ have a proxmox snapshot and clone of this state.
     ssh-copy-id root@$HOST
     ssh root@$HOST 'bash -s' < scripts/bootstrap.bash
 
+    # Re-use existing SSH credentials rather than generating new ones so that we
+    # don't also need to e.g. configure Github for new keys.
+    scp ~/.ssh/id_rsa* $HOST:.ssh/
+
 AWS secrets are needed as these are required by terraform. (A `tfvars` file will
 also be needed depending on which modules are being developed.)
 
