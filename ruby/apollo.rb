@@ -35,18 +35,30 @@ class Styx < Babs
     server-config
   )
 
-  sftp_task 'ssh', '/home/xavier/.ssh/known_hosts', 644
+  sftp_task 'ssh: configure', '/home/xavier/.ssh/known_hosts', 644
+  sftp_task 'git: configure', '/home/xavier/.gitconfig', 644
   sftp_task 'dir-watcher', '/usr/local/bin/dir-watcher', 755
 
   repo_tasks = REPOS.map do |name|
     repo = "xaviershay/#{name}"
     "github: #{repo}".tap do |task_name|
-      task task_name, depends: 'ssh', &github_task(repo)
+      task task_name, depends: 'ssh: configure', &github_task(repo)
     end
   end
 
-  %w(make wget rsync).each do |package|
-    task "apt: #{package}", &apt_package(package)
+  apt_packages = %w(
+    curl
+    imagemagick
+    jpegoptim
+    make
+    man
+    optipng
+    rsync
+    wget
+  ).map do |package|
+    "apt: #{package}".tap do |task_name|
+      task task_name, &apt_package(package)
+    end
   end
 
   task 'dev: ruby', depends: ['apt: wget', 'apt: make'] do
@@ -67,9 +79,10 @@ class Styx < Babs
     'dev: ruby',
     'dev: terraform',
     'apt: rsync',
+    'git: configure',
     'sshd: configure',
     'dir-watcher'
-  ] + repo_tasks
+  ] + repo_tasks + apt_packages
 end
 
 Dir['modules/*.rb'].each do |f|

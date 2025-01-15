@@ -1,0 +1,6 @@
+[user]
+        name = Xavier Shay
+        email = contact@xaviershay.com
+[core]
+        autocrlf = false
+        editor = vi
