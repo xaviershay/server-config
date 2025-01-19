@@ -42,7 +42,8 @@ class Styx < Babs
     'aws.region' => 'ap-southeast-4', # Melbourne
     'aws.access_key_id' => secret('aws_access_key_id'),
     'aws.secret_access_key' => secret('aws_secret_access_key'),
-    'cloudflared.http_tunnel_id' => secret('cloudflared_http_tunnel_id')
+    'cloudflared.http_tunnel_id' => secret('cloudflared_http_tunnel_id'),
+    'ipv6.stable_secret' => secret('apollo_ipv6_secret')
 
   # Fan settings
   # Not sure why this executable, but matches what was there
@@ -61,6 +62,8 @@ class Styx < Babs
     'nginx',
     'awair',
     'cloudflared',
+    'ipv6',
+    'ipv6: NetworkManager',
     'styx'
   ]
 end
@@ -72,6 +75,6 @@ end
 args = ARGV.dup
 meet = !args.delete("--no-meet")
 
-Net::SSH.start('styx.home', 'xavier') do |ssh|
+Net::SSH.start('styx.local', 'xavier') do |ssh|
   Styx.new(meet: meet).apply(SSHContext.new(ssh), filter: args[0].to_s)
 end

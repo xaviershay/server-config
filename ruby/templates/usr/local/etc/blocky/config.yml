@@ -26,7 +26,8 @@ customDNS:
 
     # This resolves *.styx.home also, which is used to reverse proxy web
     # interfaces for various services.
-    styx.home: 192.168.1.2,fdaf:78a1:4860:2:b92a:75a6:85ca:2c51
+    styx.home: 192.168.1.2,fdaf:78a1:4860:2:ea47:c9d3:25fe:e2ea
+    apollo.home: 192.168.1.6,fdaf:78a1:4860:2:e222:5b32:af9b:a3b9
 
     influxdb.home: 192.168.1.2
     grafana.home: 192.168.1.2

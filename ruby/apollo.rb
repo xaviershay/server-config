@@ -39,9 +39,6 @@ class Styx < Babs
   sftp_task 'git: configure', '/home/xavier/.gitconfig', 644
   sftp_task 'dir-watcher', '/usr/local/bin/dir-watcher', 755
 
-  # File has a secret in it, hence restrictive permissions
-  sftp_task 'sysctl', '/etc/sysctl.conf', 600
-
   repo_tasks = REPOS.map do |name|
     repo = "xaviershay/#{name}"
     "github: #{repo}".tap do |task_name|
@@ -90,7 +87,7 @@ class Styx < Babs
     'apt: rsync',
     'git: configure',
     'sshd: configure',
-    'sysctl',
+    'ipv6',
     'aws cli',
     'dir-watcher'
   ] + repo_tasks + apt_packages
@@ -103,6 +100,6 @@ end
 args = ARGV.dup
 meet = !args.delete("--no-meet")
 
-Net::SSH.start('192.168.1.51', 'xavier') do |ssh|
+Net::SSH.start('apollo.local', 'xavier') do |ssh|
   Styx.new(meet: meet).apply(SSHContext.new(ssh), filter: args[0].to_s)
 end

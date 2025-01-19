@@ -1,0 +1,23 @@
+[connection]
+id=eth0
+type=ethernet
+interface-name=eth0
+autoconnect=true
+# TODO: don't think this is right?
+stable-id=<%= v 'ipv6.stable_secret' %>
+
+[ethernet]
+mac-address-randomization=0
+
+[ipv4]
+method=manual
+address=192.168.1.2
+gateway=192.168.1.1
+dns=192.168.1.2
+may-fail=false
+
+[ipv6]
+method=auto
+ip6-privacy=0
+# TODO: Don't think this is working properly
+addr-gen-mode=stable-privacy

@@ -8,7 +8,7 @@ class Styx
     after_meet: ->{ run("sudo systemctl restart awair") }
 
   task 'awair: run' do
-    met? { run("systemctl is-active --quiet awair && echo OK").start_with?("OK") }
+    met? { run("(systemctl is-active --quiet awair && echo OK) || true").start_with?("OK") }
     meet {
       run("sudo systemctl restart awair")
     }
