@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   sftp_task 'motd', [
     '/etc/motd', # Blank file, only use dynamic generation
     '/etc/update-motd.d/10-uname',

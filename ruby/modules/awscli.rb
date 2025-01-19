@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   sftp_task 'aws cli: configure', [
     '/home/xavier/.aws/config',
     '/home/xavier/.aws/credentials'

@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   task 'nginx: install' do
     met? { run("sudo nginx -version 2>&1 || true").include?("nginx/1.22.1") }
     meet {

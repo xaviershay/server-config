@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   task 'blocky: install' do
     met? { run("blocky version | grep Version || true").start_with?("Version: v0.24") }
     meet {

@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   sftp_task 'awair: install', '/usr/local/bin/awair-to-influxdb', 755, depends: 'ruby'
   sftp_task 'awair: configure', [
     '/usr/local/etc/awair/config.yml',

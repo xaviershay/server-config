@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   task 'grafana: install' do
     met? { run("/usr/sbin/grafana-server --version || true").start_with?("Version 11.4.0") }
     meet {

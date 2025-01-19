@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   task 'cloudflared: install' do
     met? { run("cloudflared --version || true").include?("2025.1.0") }
     meet {

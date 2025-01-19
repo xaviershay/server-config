@@ -1,4 +1,4 @@
-class Styx
+class Tasks
   task 'telegraf: install' do
     met? { run("telegraf --version").start_with?("Telegraf 1.33.0") }
     meet {

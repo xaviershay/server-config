@@ -1,6 +1,6 @@
 require 'babs'
 
-class Styx < Babs
+class Tasks < Babs
   def self.systemctl_enable_task(service)
     ->{ met? { raise("Host does not support systemctl") } }
   end
@@ -101,5 +101,5 @@ args = ARGV.dup
 meet = !args.delete("--no-meet")
 
 Net::SSH.start('apollo.local', 'xavier') do |ssh|
-  Styx.new(meet: meet).apply(SSHContext.new(ssh), filter: args[0].to_s)
+  Tasks.new(meet: meet).apply(SSHContext.new(ssh), filter: args[0].to_s)
 end
