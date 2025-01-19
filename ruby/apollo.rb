@@ -39,6 +39,9 @@ class Styx < Babs
   sftp_task 'git: configure', '/home/xavier/.gitconfig', 644
   sftp_task 'dir-watcher', '/usr/local/bin/dir-watcher', 755
 
+  # File has a secret in it, hence restrictive permissions
+  sftp_task 'sysctl', '/etc/sysctl.conf', 600
+
   repo_tasks = REPOS.map do |name|
     repo = "xaviershay/#{name}"
     "github: #{repo}".tap do |task_name|
@@ -51,7 +54,7 @@ class Styx < Babs
     imagemagick
     jpegoptim
     make
-    man
+    man-db
     optipng
     rsync
     wget
@@ -75,12 +78,20 @@ class Styx < Babs
     end
   end
 
+  variables \
+    'ipv6.stable_secret' => secret('apollo_ipv6_secret'),
+    'aws.region' => 'ap-southeast-4', # Melbourne
+    'aws.access_key_id' => secret('terraform_aws_access_key_id'),
+    'aws.secret_access_key' => secret('terraform_aws_secret_access_key')
+
   root_task [
     'dev: ruby',
     'dev: terraform',
     'apt: rsync',
     'git: configure',
     'sshd: configure',
+    'sysctl',
+    'aws cli',
     'dir-watcher'
   ] + repo_tasks + apt_packages
 end
@@ -92,6 +103,6 @@ end
 args = ARGV.dup
 meet = !args.delete("--no-meet")
 
-Net::SSH.start('apollo.local', 'xavier') do |ssh|
+Net::SSH.start('192.168.1.51', 'xavier') do |ssh|
   Styx.new(meet: meet).apply(SSHContext.new(ssh), filter: args[0].to_s)
 end
