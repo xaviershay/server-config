@@ -41,7 +41,8 @@ class Styx < Babs
     'aws.infra_alerts_sns_topic_arn' => 'arn:aws:sns:ap-southeast-4:615749242856:infra-alerts', # TODO: Fetch from terraform
     'aws.region' => 'ap-southeast-4', # Melbourne
     'aws.access_key_id' => secret('aws_access_key_id'),
-    'aws.secret_access_key' => secret('aws_secret_access_key')
+    'aws.secret_access_key' => secret('aws_secret_access_key'),
+    'cloudflared.http_tunnel_id' => secret('cloudflared_http_tunnel_id')
 
   # Fan settings
   # Not sure why this executable, but matches what was there
@@ -59,6 +60,7 @@ class Styx < Babs
     'blocky',
     'nginx',
     'awair',
+    'cloudflared',
     'styx'
   ]
 end
