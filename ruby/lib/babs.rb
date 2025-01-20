@@ -6,6 +6,8 @@ require 'json'
 require 'erb'
 require 'net/sftp'
 
+require 'file_secrets'
+
 class TaskDefinition
   def met?(*args, &block)
     @met = block
@@ -116,8 +118,7 @@ class Babs
   end
 
   def self.secret(name)
-    ->{ File.read("secrets/#{name}").chomp }
-  rescue Errno::ENOENT
-    raise "Please place appropriate secret in secrets/#{name}"
+    @secrets ||= FileSecrets.new
+    @secrets.read(name)
   end
 end
