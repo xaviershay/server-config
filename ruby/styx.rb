@@ -75,6 +75,6 @@ end
 args = ARGV.dup
 meet = !args.delete("--no-meet")
 
-Net::SSH.start('styx.local', 'xavier') do |ssh|
+Net::SSH.start('styx.home', 'xavier') do |ssh|
   Tasks.new(meet: meet).apply(SSHContext.new(ssh), filter: args[0].to_s)
 end
