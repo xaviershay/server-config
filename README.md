@@ -5,9 +5,21 @@ a development server, assorted cloud services, and some homebrew IoT devices.
 
 ## Setup & Usage
 
+### Secrets
+
+Secrets are stored in an encrypted blob inside the repo. The decryption key
+(from your password manager) should be placed into `keyctl` before beginning
+development.
+
+    bin/set-system-key
+
+(Note: some terraform secrets are still stored outside the repo in a `tfvars`
+file that will need to be copied from somewhere)
+
 ### Terraform
 
-Terraform variables go in `terraform/variables.tfvars`. State is stored in S3.
+Terraform variables and secrets go in `terraform/variables.tfvars`. State is
+stored in S3.
 
     cd terraform
     terraform init
@@ -17,17 +29,6 @@ Terraform variables go in `terraform/variables.tfvars`. State is stored in S3.
 
 This depends on Terraform, since we need API tokens to be provisioned to use for
 config.
-
-We expect certain admin passwords and secrets to be provided, presumably from a
-vault or from terraform.
-
-    echo SOME_PASSWORD1 > ruby/secrets/grafana_password
-    echo SOME_PASSWORD2 > ruby/secrets/influxdb_password
-
-    # AWS credential needs to be able to write to our secrets bucket and post to
-    # SNS. See terraform config.
-    echo SOME_PASSWORD3 > ruby/secrets/aws_access_key_id
-    echo SOME_PASSWORD4 > ruby/secrets/aws_secret_access_key
 
 To apply configuration:
 
@@ -50,11 +51,7 @@ something like the following may be needed:
 
     cat /mnt/c/Users/$USERNAME/.ssh/id_rsa.pub | ssh $HOST 'cat - >> .ssh/authorized_keys'
 
-AWS secrets are needed as these are required by terraform. (A `tfvars` file will
-also be needed depending on which modules are being developed.)
-
-    echo SOME_PASSWORD5 > ruby/secrets/terraform_aws_access_key_id
-    echo SOME_PASSWORD6 > ruby/secrets/terraform_aws_secret_access_key
+A `tfvars` file will also be needed depending on which modules are being developed.
 
 From there we can proceed normally (which will disable root SSH access):
 

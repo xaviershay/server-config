@@ -1,0 +1,3 @@
+#!/bin/bash
+
+{ read -s -p "Enter system key: " pw; echo >&2; echo -n "$pw"; } | keyctl padd user babs_system_key @u

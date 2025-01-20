@@ -1,8 +1,8 @@
 require 'json'
 
 class JsonSecrets
-  def initialize(filename: File.expand_path("~/.babssecrets.json"))
-    @filename = filename
+  def initialize(filename: "~/.babssecrets.json")
+    @filename = File.expand_path(filename)
   end
 
   def read(name)
@@ -12,7 +12,7 @@ class JsonSecrets
   def write(name, value)
     blob[name] = value
     File.open(@filename, 'w', 0600) do |f|
-      f.write(JSON.pretty_generate(blob))
+      f.write(encode(blob))
     end
     value
   end
@@ -21,9 +21,17 @@ class JsonSecrets
     blob.keys.sort
   end
 
-  private
+  protected
 
   def blob
-    @blob ||= JSON.parse(File.read(@filename)) rescue {}
+    @blob ||= decode(File.read(@filename))
+  end
+
+  def encode(data)
+    JSON.pretty_generate(data)
+  end
+
+  def decode(data)
+    JSON.parse(data)
   end
 end
