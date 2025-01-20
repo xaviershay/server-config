@@ -6,7 +6,7 @@ require 'json'
 require 'erb'
 require 'net/sftp'
 
-require 'file_secrets'
+require 'json_secrets'
 
 class TaskDefinition
   def met?(*args, &block)
@@ -118,7 +118,7 @@ class Babs
   end
 
   def self.secret(name)
-    @secrets ||= FileSecrets.new
-    @secrets.read(name)
+    @secrets ||= JsonSecrets.new
+    ->{ @secrets.read(name) }
   end
 end
