@@ -24,6 +24,22 @@ end
 TaskSpec = Data.define(:name, :depends, :block)
 
 class Babs
+  def self.systemctl_enable_task(service)
+    ->{ met? { raise("Unimplemented") } }
+  end
+
+  def self.systemctl_run_task(service)
+    ->{ met? { raise("Unimplemented") } }
+  end
+
+  def self.enable_task(service)
+    ->{ met? { raise("Unimplemented") } }
+  end
+
+  def self.run_task(service)
+    ->{ met? { raise("Unimplemented") } }
+  end
+
   def initialize(logger: $stdout, meet: true)
     @logger = logger
     @meet = meet
@@ -98,8 +114,8 @@ class Babs
           erb = ERB.new(File.read(filename))
           erb.filename = filename
           @local_content = erb.result(binding)
-          remote_digest = run("sudo md5sum #{file} | head -c 32")
-          remote_perms, remote_group = *run("sudo stat -c '%a %G' #{file} || true").split(" ")
+          remote_digest = run_root("md5sum #{file} | head -c 32")
+          remote_perms, remote_group = *run_root("stat -c '%a %G' #{file} || true").split(" ")
           local_digest = Digest::MD5.hexdigest(@local_content)
           local_digest == remote_digest && remote_perms.to_i == perms.to_i && (!group || group == remote_group)
         }

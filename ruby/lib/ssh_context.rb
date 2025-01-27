@@ -1,14 +1,19 @@
 class SSHContext < Context
   attr_reader :ssh
 
-  def initialize(ssh, logger: $stdout)
+  def initialize(ssh, logger: $stdout, root_bin: 'sudo')
     super()
     @ssh = ssh
     @logger = logger
+    @root_bin = root_bin
   end
 
   def run(cmd)
     execute_ssh_command(cmd)
+  end
+
+  def run_root(cmd)
+    execute_ssh_command(@root_bin + " " + cmd)
   end
 
   def run_script(location)
@@ -18,16 +23,16 @@ class SSHContext < Context
 
   def upload_file(file, content, perms, group: nil)
     temp_file = "/tmp/#{File.basename(file)}"
-    run("sudo rm -f #{temp_file}")
-    Net::SFTP.start(@ssh.host, 'xavier') do |sftp|
+    run_root("rm -f #{temp_file}")
+    Net::SFTP.start(@ssh.host, @ssh.options.fetch(:user)) do |sftp|
       sftp.file.open(temp_file, "w", 600) do |f|
         f.write(content)
       end
     end
-    run("sudo mkdir -p $(dirname #{file})")
-    run("sudo mv #{temp_file} #{file}")
-    run("sudo chmod #{perms} #{file}") if perms
-    run("sudo chgrp #{group} #{file}") if group
+    run_root("mkdir -p $(dirname #{file})")
+    run_root("mv #{temp_file} #{file}")
+    run_root("chmod #{perms} #{file}") if perms
+    run_root("chgrp #{group} #{file}") if group
   end
 
   def execute_ssh_command(command, log: false)
