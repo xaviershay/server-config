@@ -26,10 +26,25 @@ resource "cloudflare_record" "http_app" {
   proxied = true
 }
 
+resource "cloudflare_record" "http_grafana" {
+  zone_id = module.zone_xaviershay_com.id
+  name    = "grafana"
+  content   = "${cloudflare_zero_trust_tunnel_cloudflared.auto_tunnel.cname}"
+  type    = "CNAME"
+  proxied = true
+}
+
 resource "cloudflare_zero_trust_access_application" "http_app" {
   zone_id = module.zone_xaviershay_com.id
   name             = "Home"
   domain           = "home.xaviershay.com"
+  session_duration = "24h"
+}
+
+resource "cloudflare_zero_trust_access_application" "http_grafana" {
+  zone_id = module.zone_xaviershay_com.id
+  name             = "Grafana"
+  domain           = "grafana.xaviershay.com"
   session_duration = "24h"
 }
 
@@ -47,6 +62,18 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "auto_tunnel" {
          required  = true
          team_name = "xaviershay"
          aud_tag   = [cloudflare_zero_trust_access_application.http_app.aud]
+       }
+     }
+   }
+   ingress_rule {
+     hostname = "${cloudflare_record.http_grafana.hostname}"
+     service  = "http://grafana.home:3000"
+     origin_request {
+       connect_timeout = "2m0s"
+       access {
+         required  = true
+         team_name = "xaviershay"
+         aud_tag   = [cloudflare_zero_trust_access_application.http_grafana.aud]
        }
      }
    }
@@ -71,6 +98,19 @@ resource "cloudflare_access_policy" "allow_user" {
   account_id     = var.cloudflare_account_id
   application_id = cloudflare_zero_trust_access_application.http_app.id
   name           = "Home Access"
+  precedence     = 1
+  decision       = "allow"
+
+  include {
+    group = [cloudflare_access_group.home.id]
+  }
+}
+
+# Create an Access Policy and attach it to the HTTP Grafana application
+resource "cloudflare_access_policy" "allow_grafana_user" {
+  account_id     = var.cloudflare_account_id
+  application_id = cloudflare_zero_trust_access_application.http_grafana.id
+  name           = "Grafana Access"
   precedence     = 1
   decision       = "allow"
 
