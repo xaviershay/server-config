@@ -25,6 +25,14 @@ class Tasks < Babs
     }
   end
 
+  def self.run_task(service)
+    systemctl_run_task(service)
+  end
+
+  def self.enable_task(service)
+    systemctl_enable_task(service)
+  end
+
   variables \
     'hostname' => 'styx',
     'influxdb.host' => 'influxdb.home',
@@ -62,6 +70,7 @@ class Tasks < Babs
     'cloudflared',
     'ipv6',
     'ipv6: NetworkManager',
+    'prometheus node exporter systemd',
     'styx'
   ]
 end
