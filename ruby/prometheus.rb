@@ -1,19 +1,8 @@
 require 'babs'
+require 'openrc_tasks'
 
 class Tasks < Babs
-  def self.enable_task(service)
-    ->{
-      met? { run("rc-update show | grep #{service} || true").include?(service) }
-      meet { run("doas rc-update add #{service} default") }
-    }
-  end
-
-  def self.run_task(service)
-    ->{
-      met? { run("rc-service #{service} status || true").include?("status: started") }
-      meet { run("doas rc-service #{service} start") }
-    }
-  end
+  extend OpenrcTasks
 
   root_task [
     "prometheus",
