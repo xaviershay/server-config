@@ -15,11 +15,8 @@ class Tasks < Babs
     }
   end
 
-  variables \
-    'blocky.port' => 4000
-
   root_task [
-    "blocky openrc",
+    "prometheus",
     "prometheus node exporter openrc"
   ]
 end
@@ -32,8 +29,7 @@ args = ARGV.dup
 meet = !args.delete("--no-meet")
 
 ips = [
-  '192.168.1.11',
-  '192.168.1.12',
+  '192.168.1.13'
 ]
 
 ips.each do |ip|
