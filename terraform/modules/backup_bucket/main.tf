@@ -70,7 +70,7 @@ resource "aws_iam_group_policy_attachment" "backups_policy" {
 }
 
 resource "aws_iam_policy" "backup_policy" {
-  name        = "backup-policy"
+  name        = "${var.group_name}-policy"
   description = "Allow put access to backup bucket"
 
   policy = jsonencode({
