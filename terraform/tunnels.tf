@@ -19,7 +19,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared" "auto_tunnel" {
 }
 
 resource "cloudflare_record" "http_app" {
-  zone_id = module.zone_xaviershay_com.id
+  zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
   name    = "home"
   content   = "${cloudflare_zero_trust_tunnel_cloudflared.auto_tunnel.cname}"
   type    = "CNAME"
@@ -27,7 +27,7 @@ resource "cloudflare_record" "http_app" {
 }
 
 resource "cloudflare_record" "http_grafana" {
-  zone_id = module.zone_xaviershay_com.id
+  zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
   name    = "grafana"
   content   = "${cloudflare_zero_trust_tunnel_cloudflared.auto_tunnel.cname}"
   type    = "CNAME"
@@ -35,14 +35,14 @@ resource "cloudflare_record" "http_grafana" {
 }
 
 resource "cloudflare_zero_trust_access_application" "http_app" {
-  zone_id = module.zone_xaviershay_com.id
+  zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
   name             = "Home"
   domain           = "home.xaviershay.com"
   session_duration = "24h"
 }
 
 resource "cloudflare_zero_trust_access_application" "http_grafana" {
-  zone_id = module.zone_xaviershay_com.id
+  zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
   name             = "Grafana"
   domain           = "grafana.xaviershay.com"
   session_duration = "24h"

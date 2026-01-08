@@ -4,6 +4,14 @@ variable "phone_number" {
   # Format: +1234567890
 }
 
+variable "cloudflare_account_id" {
+  type = string
+}
+
+variable "cloudflare_api_token" {
+  type = string
+}
+
 # variable "dnsimple_account_id" {
 #   description = "DNSimple Account ID"
 #   type = string
