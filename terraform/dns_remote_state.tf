@@ -6,7 +6,7 @@ data "terraform_remote_state" "dns" {
     bucket         = "xaviershay-terraform-state"
     key            = "dns.tfstate"
     region         = "ap-southeast-4"
-    dynamodb_table = "terraform-state-locks"
+    use_lockfile   = true
     encrypt        = true
   }
 }

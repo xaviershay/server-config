@@ -40,6 +40,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "backup" {
     id     = "transition_to_ia"
     status = "Enabled"
 
+    filter {}
+
     transition {
       days          = 30
       storage_class = "STANDARD_IA"
