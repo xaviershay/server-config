@@ -34,6 +34,14 @@ resource "cloudflare_record" "http_grafana" {
   proxied = true
 }
 
+resource "cloudflare_record" "http_homeasst" {
+  zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
+  name    = "homeasst"
+  content   = "${cloudflare_zero_trust_tunnel_cloudflared.auto_tunnel.cname}"
+  type    = "CNAME"
+  proxied = true
+}
+
 resource "cloudflare_zero_trust_access_application" "http_app" {
   zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
   name             = "Home"
@@ -45,6 +53,13 @@ resource "cloudflare_zero_trust_access_application" "http_grafana" {
   zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
   name             = "Grafana"
   domain           = "grafana.xaviershay.com"
+  session_duration = "24h"
+}
+
+resource "cloudflare_zero_trust_access_application" "http_homeasst" {
+  zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
+  name             = "Home Assistant"
+  domain           = "homeasst.xaviershay.com"
   session_duration = "24h"
 }
 
@@ -74,6 +89,18 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "auto_tunnel" {
          required  = true
          team_name = "xaviershay"
          aud_tag   = [cloudflare_zero_trust_access_application.http_grafana.aud]
+       }
+     }
+   }
+   ingress_rule {
+     hostname = "${cloudflare_record.http_homeasst.hostname}"
+     service  = "http://192.168.1.7:8123"
+     origin_request {
+       connect_timeout = "10s"
+       access {
+         required  = true
+         team_name = "xaviershay"
+         aud_tag   = [cloudflare_zero_trust_access_application.http_homeasst.aud]
        }
      }
    }
@@ -111,6 +138,19 @@ resource "cloudflare_zero_trust_access_policy" "allow_grafana_user" {
   account_id     = var.cloudflare_account_id
   application_id = cloudflare_zero_trust_access_application.http_grafana.id
   name           = "Grafana Access"
+  precedence     = 1
+  decision       = "allow"
+
+  include {
+    group = [cloudflare_zero_trust_access_group.home.id]
+  }
+}
+
+# Create an Access Policy and attach it to the HTTP Homeasst application
+resource "cloudflare_zero_trust_access_policy" "allow_homeasst_user" {
+  account_id     = var.cloudflare_account_id
+  application_id = cloudflare_zero_trust_access_application.http_homeasst.id
+  name           = "Home Assistant Access"
   precedence     = 1
   decision       = "allow"
 
