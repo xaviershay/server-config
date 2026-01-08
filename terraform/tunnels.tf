@@ -84,7 +84,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "auto_tunnel" {
 }
 
 # Create an Access Group for the single user
-resource "cloudflare_access_group" "home" {
+resource "cloudflare_zero_trust_access_group" "home" {
   account_id = var.cloudflare_account_id
   name       = "home"
 
@@ -94,7 +94,7 @@ resource "cloudflare_access_group" "home" {
 }
 
 # Create an Access Policy and attach it to the HTTP application
-resource "cloudflare_access_policy" "allow_user" {
+resource "cloudflare_zero_trust_access_policy" "allow_user" {
   account_id     = var.cloudflare_account_id
   application_id = cloudflare_zero_trust_access_application.http_app.id
   name           = "Home Access"
@@ -102,12 +102,12 @@ resource "cloudflare_access_policy" "allow_user" {
   decision       = "allow"
 
   include {
-    group = [cloudflare_access_group.home.id]
+    group = [cloudflare_zero_trust_access_group.home.id]
   }
 }
 
 # Create an Access Policy and attach it to the HTTP Grafana application
-resource "cloudflare_access_policy" "allow_grafana_user" {
+resource "cloudflare_zero_trust_access_policy" "allow_grafana_user" {
   account_id     = var.cloudflare_account_id
   application_id = cloudflare_zero_trust_access_application.http_grafana.id
   name           = "Grafana Access"
@@ -115,6 +115,6 @@ resource "cloudflare_access_policy" "allow_grafana_user" {
   decision       = "allow"
 
   include {
-    group = [cloudflare_access_group.home.id]
+    group = [cloudflare_zero_trust_access_group.home.id]
   }
 }
