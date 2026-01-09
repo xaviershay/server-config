@@ -1,3 +1,16 @@
+## 2026-01-08
+
+Trying to get homeasst.xaviershay.com to work with Android app
+
+Following https://community.home-assistant.io/t/home-assistant-app-through-cloudflare-tunnel-with-auth-android/709951 but trying to terraform some of it.
+
+Couldn't terraform service auth policy, did that manually.
+Maybe don't need WAF? Should only auth valid certs, and only I can issue valid certs
+
+Couldn't get certs working.
+
+Now rely on Home Assistant for auth, do straight passthrough on tunnel.
+
 ## 2024-12-30
 
 ### Setting up Raspberry Pi 5

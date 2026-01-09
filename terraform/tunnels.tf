@@ -42,6 +42,14 @@ resource "cloudflare_record" "http_homeasst" {
   proxied = true
 }
 
+resource "cloudflare_record" "http_homeasst_app" {
+  zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
+  name    = "homeasst-app"
+  content   = "${cloudflare_zero_trust_tunnel_cloudflared.auto_tunnel.cname}"
+  type    = "CNAME"
+  proxied = true
+}
+
 resource "cloudflare_zero_trust_access_application" "http_app" {
   zone_id = data.terraform_remote_state.dns.outputs.zone_xaviershay_com_id
   name             = "Home"
@@ -102,6 +110,13 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "auto_tunnel" {
          team_name = "xaviershay"
          aud_tag   = [cloudflare_zero_trust_access_application.http_homeasst.aud]
        }
+     }
+   }
+   ingress_rule {
+     hostname = "${cloudflare_record.http_homeasst_app.hostname}"
+     service  = "http://192.168.1.7:8123"
+     origin_request {
+       connect_timeout = "10s"
      }
    }
    ingress_rule {
